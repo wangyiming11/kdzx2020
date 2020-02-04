@@ -1,6 +1,13 @@
 <template>
 	<div class="article">
-		咨询管理
+		<div class="article_top">
+			
+		</div>
+		<div class="article_content">
+		<!-- 表格开始 -->
+			
+	   	 <!-- 表格结束 -->
+		</div>
 	</div>
 </template>
 <script type="text/javascript">
@@ -16,3 +23,8 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
   		},
 	}
 </script>
+<style type="text/css">
+	.article{
+		padding: 0.5em;
+	}
+</style>
