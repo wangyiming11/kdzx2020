@@ -61,9 +61,9 @@
 		   <el-form-item label="真实姓名">
 		    <el-input v-model="userForm.nickname"></el-input>
 		  </el-form-item>
-		   <el-form-item label="手机号码">
+		 <!--   <el-form-item label="手机号码">
 		    <el-input v-model="userForm.type"></el-input>
-		  </el-form-item>
+		  </el-form-item> -->
 		  <el-form-item label="email">
 		    <el-input v-model="userForm.email"></el-input>
 		  </el-form-item>
@@ -93,14 +93,18 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 			this.loadUsers()
   		},
   		methods:{
-  			...mapActions(['loadUsers','changeUserStatus']),
+  			...mapActions(['loadUsers','changeUserStatus','saveUser']),
   			// 新增用户
   			adduser(){
 				this.dialogVisible = true
   			},
   			// 保存用户
   			savaUser(){
-  				dialogVisible = false
+  				this.dialogVisible = false
+  				this.userForm.enabled = false
+				this.saveUser(this.userForm).then((r)=>{
+					this.loadUsers()
+				})
   				
   			},
   			// 改变用户的状态

@@ -12,6 +12,16 @@ export default {
     }
   },
   actions:{
+    // 保存栏目
+      saveCategories(context,params){
+         return new Promise((resolve,reject)=>{
+          axios.post('/manager/category/saveOrUpdateCategory').then((res)=>{
+            resolve(res)
+          }).catch((error)=>{
+            reject(error)
+          })
+        })
+      },
     // 加载所有栏目
     loadCategories(context){
 		 return new Promise((resolve,reject)=>{

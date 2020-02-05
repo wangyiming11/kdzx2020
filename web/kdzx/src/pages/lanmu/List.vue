@@ -1,7 +1,7 @@
 <template>
 	<div class="lanmu">
 		<div class="lanmu_top">
-			<el-button type="success" size='small'>新增</el-button>
+			<el-button type="success" size='small' @click='toAdd'>新增</el-button>
 			<el-button type="success" size='small'>批量删除</el-button>
 		</div>
 		<div class="lanmu_content">
@@ -38,6 +38,33 @@
 	    </el-table>
 	    <!-- 表格结束 -->
 		</div>
+		<!-- 新增栏目模态框开始 -->
+		<el-dialog
+		  title="新增栏目"
+		  :visible.sync="dialogVisible"
+		  width="30%"
+		  >
+		  <!-- 表单开始 -->
+		 <el-form label-position="right" label-width="80px" :model="categoriesForm">
+		  <el-form-item label="栏目名称">
+		    <el-input v-model="categoriesForm.name"></el-input>
+		  </el-form-item>
+		 <el-form-item label="父栏目">
+		    <el-select v-model="categoriesForm.parentId" placeholder="请选择父栏目">
+		       <el-option :key='c.id' v-for='c in categories' :label="c.name" :value="c.id"></el-option>
+		    </el-select>
+		  </el-form-item>
+		 <el-form-item label="描述">
+		    <el-input type="textarea" v-model="categoriesForm.comment"></el-input>
+		  </el-form-item>
+		</el-form>
+			<!-- 表单结束 -->
+		  <span slot="footer" class="dialog-footer">
+		    <el-button size='small' @click="dialogVisible = false">取 消</el-button>
+		    <el-button size='small' type="success" @click="save">确 定</el-button>
+		  </span>
+		</el-dialog>
+		<!-- 新增栏目模态框结束 -->
 	</div>
 </template>
 <script type="text/javascript">
@@ -46,6 +73,8 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 		data(){
 			return {
 				multipleSelection:[],
+				dialogVisible: false,
+				categoriesForm:{}
 			}
 		},
 
@@ -56,7 +85,16 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 			this.loadCategories()
 		},
   		methods:{
-  			 ...mapActions(['loadCategories']),
+  			 ...mapActions(['loadCategories','saveCategories']),
+  			 // 点击新增按钮
+  			 toAdd(){
+  			 	this.dialogVisible = true
+  			 },
+  			 // 保存栏目
+			 save(){
+				this.dialogVisible = false
+				this.saveCategories(this.categoriesForm)
+			 },
   			 // 多选框
   			 handleSelectionChange(val){
 				this.multipleSelection = val;

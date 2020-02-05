@@ -13,6 +13,16 @@ export default {
     }
   },
   actions:{
+    // 保存用户
+    saveUser(context,params){
+         return new Promise((resolve,reject)=>{
+          axios.post('/manager/user/saveOrUpdateUser',params).then((res)=>{
+            resolve(res)
+          }).catch((err)=>{
+            reject(err)
+          })
+      })
+    },
     // 改变用户的状态
     changeUserStatus(context,params){
        return new Promise((resolve,reject)=>{
