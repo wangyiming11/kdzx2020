@@ -2,7 +2,7 @@
 	<div class="lanmu">
 		<div class="lanmu_top">
 			<el-button type="success" size='small' @click='toAdd'>新增</el-button>
-			<el-button type="success" size='small'>批量删除</el-button>
+			<el-button type="success" size='small' @click='deleteAll'>批量删除</el-button>
 		</div>
 		<div class="lanmu_content">
 		<!-- 表格开始 -->
@@ -31,8 +31,8 @@
 	      </el-table-column>
 	      <el-table-column width="150" label="操作" align='center'>
 	      	<template slot-scope='{row}'>
-	      		<i class="fa fa-trash"></i>
-	      		<i class="fa fa-pencil"></i>
+	      		<i class="fa fa-trash" @click='deleteLanmu(row.id)'></i>
+	      		<i class="fa fa-pencil" @click='updata(row)'></i>
 	      	</template>
 	      </el-table-column>
 	    </el-table>
@@ -40,7 +40,7 @@
 		</div>
 		<!-- 新增栏目模态框开始 -->
 		<el-dialog
-		  title="新增栏目"
+		  :title=title
 		  :visible.sync="dialogVisible"
 		  width="30%"
 		  >
@@ -74,7 +74,8 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 			return {
 				multipleSelection:[],
 				dialogVisible: false,
-				categoriesForm:{}
+				categoriesForm:{},
+				title:''
 			}
 		},
 
@@ -85,10 +86,75 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 			this.loadCategories()
 		},
   		methods:{
-  			 ...mapActions(['loadCategories','saveCategories']),
+  			 ...mapActions(['loadCategories','saveCategories','deleteLm','deleteAllLm']),
+  			 // 批量删除
+  			 deleteAll(){
+				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        })
+		        .then(()=>{
+		        	let ids=this.multipleSelection.map((item)=>{
+					return item.id
+				})
+				this.deleteAllLm({ids})
+				.then(()=>{
+					this.$notify.success({
+			          title: '成功',
+			          message: '删除成功！'
+			        });
+			          this.loadCategories();
+				})
+				.catch(()=>{
+					this.$notify.error({
+			          title: '错误',
+			          message: '删除失败！'
+			        });
+				})
+			})
+		        .catch(()=>{
+		        	this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          });   
+		        })	
+  			 },
+
+  			 // 删除栏目
+  			 deleteLanmu(id){
+  			 	this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(()=>{
+		        		this.deleteLm(id)
+							.then(()=>{
+								this.$notify.success({
+						          title: '成功',
+						          message: '删除成功！'
+						        });
+						        this.loadCategories();
+							})
+							.catch(()=>{
+								this.$notify.error({
+						          title: '错误',
+						          message: '删除失败！'
+						        });
+							});
+		        })
+				
+  			 },
+  			 // 修改栏目信息
+  			 updata(data){
+  			 	this.dialogVisible = true
+				this.categoriesForm = data
+				this.title = '修改栏目'
+  			 },
   			 // 点击新增按钮
   			 toAdd(){
   			 	this.dialogVisible = true
+  			 	this.title = '新增栏目'
   			 },
   			 // 保存栏目
 			 save(){
