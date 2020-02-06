@@ -5,7 +5,7 @@ import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
 import Users from './users'
-import Article from './article'
+import Article from './article/index'
 import Lanmu from './lanmu'
 Vue.use(Vuex)
 
