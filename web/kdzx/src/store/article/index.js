@@ -24,14 +24,13 @@ export default {
   actions: {
     // 1.分页加载文章
     async loadArticle ({ commit }, payload) {
-      console.log(payload.page)
-      console.log(payload.pageSize)
-      let response = await axios.get('/manager/article/findArticle', {
+      await axios.get('/manager/article/findArticle', {
         params: payload
+      }).then((response) => {
+        console.log(response)
+        commit('resetArticle', response.data.data.list)
+        commit('resetTotal', response.data.data.total)
       })
-      commit ('resetArticle', response.date.date.list)
-      commit ('resetTotal', response.date.date.total)
-      console.log(response)
     }
   }
 }

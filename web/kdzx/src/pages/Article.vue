@@ -73,15 +73,15 @@
 		      </el-select>
 		    </el-form-item>
 		  <el-form-item label="列表样式" label-width="6em">
-		      <ul class="list_style">
-		      	<li class="style_one" :class="{current:articleModal.form.liststyle=='style-one'}" @click="articleModal.form.liststyle = 'style-one'">
-		      		<img src="@/assets/style_one.jpg" alt="">
-		      	</li>
-		      	<li class="style_two" :class="{current:articleModal.form.liststyle=='style-two'}"  @click="articleModal.form.liststyle = 'style-two'">
-		      		<img src="@/assets/style_two.jpg" alt="">
-		      	</li>
-		      </ul>
-		    </el-form-item>
+				<ul class="list_style">
+					<li class="style_one" :class="{current:articleModal.form.liststyle=='style-one'}" @click="articleModal.form.liststyle = 'style-one'">
+						<img src="@/assets/style_one.jpg" alt="">
+					</li>
+					<li class="style_two" :class="{current:articleModal.form.liststyle=='style-two'}"  @click="articleModal.form.liststyle = 'style-two'">
+						<img src="@/assets/style_two.jpg" alt="">
+					</li>
+				</ul>
+			</el-form-item>
 
 			 <!--  <el-form-item label="缩略图" label-width="6em">
 

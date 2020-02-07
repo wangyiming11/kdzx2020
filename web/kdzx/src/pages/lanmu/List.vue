@@ -80,13 +80,13 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 		},
 
 		 computed: {
-    		...mapGetters(['categories'])
+    		...mapGetters('Lanmu',['categories'])
   		},
 		created(){
 			this.loadCategories()
 		},
   		methods:{
-  			 ...mapActions(['loadCategories','saveCategories','deleteLm','deleteAllLm']),
+  			 ...mapActions('Lanmu',['loadCategories','saveCategories','deleteLm','deleteAllLm']),
   			 // 批量删除
   			 deleteAll(){
 				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {

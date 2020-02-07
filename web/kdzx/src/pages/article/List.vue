@@ -62,17 +62,27 @@
 			<el-dialog
 				:title=title
 				:visible.sync="dialogVisible"
-				width="30%"
+				width="50%"
 				>
 				<!-- 表单开始 -->
 			<el-form label-position="right" label-width="80px" :model="articleForm">
 				<el-form-item label="文章名称">
 					<el-input v-model="articleForm.name"></el-input>
 				</el-form-item>
-			<el-form-item label="父栏目">
+			<el-form-item label="所属栏目">
 				<el-select v-model="articleForm.categoryId" placeholder="请选择所属栏目">
 					<el-option :key='c.id' v-for='c in categories' :label="c.name" :value="c.id"></el-option>
 				</el-select>
+			</el-form-item>
+			<el-form-item label="列表样式" >
+				<ul style="list-style:none;padding:0" class="list_style">
+					<li :class="{current:articleForm.liststyle=='style-one'}" @click="articleForm.liststyle = 'style-one'">
+						<img src="@/assets/form_images/style-one.jpg" alt="图片丢了">
+					</li>
+					<li :class="{current:articleForm.liststyle=='style-two'}"  @click="articleForm.liststyle = 'style-two'">
+						<img src="@/assets/form_images/style-two.jpg" alt="图片丢了">
+					</li>
+				</ul>
 			</el-form-item>
 			<el-form-item label="正文">
 				<el-input type="textarea" v-model="articleForm.content"></el-input>
@@ -81,7 +91,7 @@
 				<!-- 表单结束 -->
 				<span slot="footer" class="dialog-footer">
 					<el-button size='small' @click="dialogVisible = false">取 消</el-button>
-					<el-button size='small' type="success" @click="save">确 定</el-button>
+					<el-button size='small' type="success" @click="">确 定</el-button>
 				</span>
 			</el-dialog>
 			<!-- 模态框结束 -->
@@ -99,7 +109,7 @@
 	</div>
 </template>
 <script type="text/javascript">
-import {mapActions,mapState,mapMutations} from 'vuex';
+import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 	export default {
 		data(){
 			return {
@@ -108,7 +118,7 @@ import {mapActions,mapState,mapMutations} from 'vuex';
 				articleForm:{
 					liststyle:'style-one'
 				},
-				title:''
+				title:'',
 			}
 		},
 			created() {
@@ -120,7 +130,8 @@ import {mapActions,mapState,mapMutations} from 'vuex';
 				this.loadArticle(payload)
 			},
 		  computed: {
-    		...mapState('Article',['article','page','pageSize','total','categoryId'])
+				...mapState('Article',['article','page','pageSize','total','categoryId']),
+				...mapGetters('Lanmu',['categories'])
 			},
 			methods: {
 				...mapActions('Article',['loadArticle']),
@@ -145,5 +156,8 @@ import {mapActions,mapState,mapMutations} from 'vuex';
 	}
 	.article_top{
 		margin-bottom: 1em;
+	}
+	.list_style >li.current {
+		border-color: #409eff;
 	}
 </style>

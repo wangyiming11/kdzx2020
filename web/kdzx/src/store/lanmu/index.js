@@ -1,5 +1,6 @@
 import axios from '@/http/axios';
 export default {
+  namespaced: true,
   state:{
     categories:[]
   },

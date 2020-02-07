@@ -6,7 +6,7 @@ import settings from './modules/settings'
 import user from './modules/user'
 import Users from './users'
 import Article from './article/index'
-import Lanmu from './lanmu'
+import Lanmu from './lanmu/index'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
