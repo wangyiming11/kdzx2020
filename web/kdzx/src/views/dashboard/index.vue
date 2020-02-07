@@ -1,74 +1,470 @@
-<style scoped>
-  h2{
-    text-align: center;
-    padding: 30px;
-    font-size: 18px;
-  }
-  #chart_example{
-    width: 50%;
-    height: 500px;
-    border: 1px solid red;
-    margin: 0 auto;
-  }
-</style>
+<!--首页-->
 <template>
-  <div>
-    <h2>看点资讯浏览量统计</h2>
-    <div id="chart_example">
- 
+  <div id="index">
+    <el-row :gutter="20" class="index-num">
+      <el-col :span="6">
+        <div class="index-num-one">
+          <div>今日浏览用户：<span>320</span>人</div>
+          <div>今日注册用户：<span>28</span>人</div>
+          <div>总注册用户：<span>32</span>人</div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="index-num-two">
+          <div>今日发布作家：<span>320</span>人</div>
+          <div>今日注册作家：<span>28</span>人</div>
+          <div>总发布作家：<span>32</span>人</div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="index-num-three">
+          <div>作品类别：<span>320</span>种</div>
+          <div>平均发布量：<span>28</span>种</div>
+          <div>待发布量：<span>32</span>种</div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="index-num-four">
+          <div>今日用户评论：<span>320</span>条</div>
+          <div>今日作家回复：<span>28</span>条</div>
+          <div>今日总评论：<span>466</span>条</div>
+        </div>
+      </el-col>
+    </el-row>
+    <div class="index-curve">
+      <el-row>
+        <el-col :span="18">
+          <div class="index-curve-chart">
+            <div id="indexOrder" style="min-width:400px;height:300px"></div>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="index-curve-chart">
+            <div id="indexBusiness" style="min-width:200px;height:150px"></div>
+          </div>
+          <div class="index-curve-chart">
+            <div id="indexBrush" style="min-width:200px;height:150px"></div>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="index-news">
+      <el-row :gutter='20'>
+        <el-col :span="8">
+          <div class="news">
+            <div class="index-title">
+              <div>最新发布</div>
+              <div @click="toVouncher" class="linkSpan">更多>></div>
+            </div>
+            <div class="index-content">
+              <el-table :data="rechargeData" style="width:100%;font-size:12px;">
+                <el-table-column align="left" prop="id" label="作品ID"></el-table-column>
+                <el-table-column align="center" prop="money" label="类别编号"></el-table-column>
+                <el-table-column align="right" prop="name" label="作者"></el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="posts">
+            <div class="index-title">
+              <div>最新发布</div>
+              <div @click="toVouncher" class="linkSpan">更多>></div>
+            </div>
+            <div class="index-content">
+              <el-table :data="advanceData" style="width:100%;font-size:12px;">
+                <el-table-column align="left" prop="id" label="作品ID"></el-table-column>
+                <el-table-column align="center" prop="money" label="作品编号"></el-table-column>
+                <el-table-column align="right" prop="name" label="作者"></el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="servers">
+            <div class="index-title">
+              <div>最新日志</div>
+              <div @click="toLogs" class="linkSpan">更多>></div>
+            </div>
+            <div class="index-content">
+              <el-table :data="logData" style="width:100%;font-size:12px;">
+                <el-table-column align="left" prop="id" label="日志ID"></el-table-column>
+                <el-table-column align="center" prop="content" label="内容"></el-table-column>
+                <el-table-column align="right" prop="name" label="操作者"></el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
- 
 <script>
-  import echarts from 'echarts'
-  export default {
-    data() {
-      return {}
+import { mapGetters } from 'vuex'
+import Highcharts from 'highcharts'
+export default {
+  name: 'Index',
+  computed: {
+   
+  },
+  data(){
+    return {
+      rechargeData:[{
+        id:1001,
+        money:10,
+        name:'一天'
+      },{
+        id:1002,
+        money:101,
+        name:'世界'
+      },{
+        id:1003,
+        money:21,
+        name:'走下去'
+      },{
+        id:1004,
+        money:15,
+        name:'回忆'
+      },{
+        id:1004,
+        money:78,
+        name:'等待'
+      }],
+      advanceData:[{
+        id:1001,
+        money:33,
+        name:'啦啦啦'
+      },{
+        id:1002,
+        money:76,
+        name:'问问'
+      },{
+        id:1003,
+        money:98,
+        name:'天天'
+      },{
+        id:1004,
+        money:12,
+        name:'uu'
+      },{
+        id:1004,
+        money:68,
+        name:'阿萨法'
+      }],
+      logData:[{
+        id:1001,
+        content:'审核XXX通过',
+        name:'1号选手'
+      },{
+        id:1001,
+        content:'添加用户',
+        name:'1号选手'
+      },{
+        id:1001,
+        content:'删除用户',
+        name:'1号选手'
+      },{
+        id:1001,
+        content:'发布公告',
+        name:'1号选手'
+      },{
+        id:1001,
+        content:'撤销发布',
+        name:'1号选手'
+      }],
+    };
+  },
+  mounted() {
+    this.toDraw();
+    this.toDrawBusiness();
+    this.toDrawBrush();
+  },
+  methods:{
+    //跳转到资讯页面
+    toVouncher(){
+      this.$router.push('@pages/article');
     },
-    mounted() {
-      let this_ = this;
-      let myChart = echarts.init(document.getElementById('chart_example'));
-      let option = {
-        color: ['#f44'],
-        tooltip : {
-          trigger: 'axis',
-          axisPointer : {
-            type : 'shadow'
+    //跳转到栏目页面
+    toLogs(){
+      this.$router.push('/logs/index');
+    },
+    //绘制堆叠柱状图
+    toDraw(){
+      var chart = Highcharts.chart('indexOrder', {
+        credits:{
+          enabled:false
+        },
+        colors:['#27A9E3','#28B779'],
+        chart: {
+          type: 'column',
+          spacing : [0, 0 , 0, 0],
+        },
+        title: {
+          text: '待发布和已发布',
+          y:20,
+          style:{ 
+            "fontSize": "14px" 
           }
         },
-        xAxis : [
-          {
-            type : 'category',
-            data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月',],
-            axisTick: {
-              alignWithLabel: true
+        xAxis: {
+          categories: ['3月13日','3月14日','3月15日','3月16日','3月17日','3月18日','3月19日']
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: ''
+          },
+          stackLabels: {  // 堆叠数据标签
+            enabled: true,
+            style: {
+              fontWeight: 'bold',
+              color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
             }
           }
-        ],
-        yAxis : [
-          {
-            type : 'value'
+        },
+        legend: {
+          align: 'right',
+          x: -30,
+          verticalAlign: 'top',
+          y: 25,
+          floating: true,
+          backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+          borderColor: '#CCC',
+          borderWidth: 1,
+          shadow: false
+        },
+        tooltip: {
+          pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}篇</b>' +
+          '<br/>',
+          shared: true 
+        },
+        plotOptions: {
+          column: {
+            stacking: 'normal',
+            dataLabels: {
+              enabled: true,
+              color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+              style: {
+                // 如果不需要数据标签阴影，可以将 textOutline 设置为 'none'
+                textOutline: '1px 1px black'
+              }
+            }
           }
-        ],
-        series : [
-          {
-            name:'每月浏览',
-            type:'bar',
-            barWidth: '60%',
-            data:[995,666,444,858,654,236,645,546,846,225,547,356]
-          }
-        ]
-      };
-      myChart.setOption(option);
- 
-      //建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
-      window.addEventListener('resize',function() {myChart.resize()});
+        },
+        series: [{
+          name: '待发布',
+          data: [234,545,373,454,363,243,101]
+        }, {
+          name: '已发布',
+          data: [234,545,373,454,363,243,101]
+        }]
+      });
     },
-    methods: {},
-    watch: {},
-    created() {
- 
-    }
+    /* 绘制商家饼状图 */
+    toDrawBusiness(){
+      let chart = Highcharts.chart('indexBusiness', {
+        colors: ['#0A7BCB','#0899FD','#4CB8FE','#8ED1FE'],
+        credits:{
+          enabled:false
+        },
+        chart: {
+          type:'pie',
+          spacing : [0, 0 , 0, 0],
+          margin: [0, 0, 0, -70]
+        },
+        title: {
+          floating:true,
+          x:-35,
+          text: '用户总计<br/>999009',
+          style:{ "color": "#333333", "fontSize": "10px" }
+        },
+        tooltip: {
+          pointFormat: '{series.name}占比:<b>{point.y}%</b>'
+        },
+        legend: {
+          align: 'right',
+          verticalAlign: 'middle',
+          floating: true,
+          layout:'vertical'
+        },
+        plotOptions: {
+          pie: {
+            innerSize: 100,
+            depth: 25,
+            dataLabels: {
+              enabled: true,
+              distance: -15,
+              format:'<b>{point.y}%</b>',
+              style: {
+                color: 'white',
+                fontSize:'12px'
+              }
+            },
+            showInLegend: true,
+            allowPointSelect: true,
+            cursor: 'pointer'
+          }
+        },
+        series: [{
+          type: 'pie',
+          innerSize: '50%',
+          name: '用户数量',
+          /* 百分比 */
+          data: [
+            ['高级用户',30],
+            ['普通用户',30],
+            ['新手上路',40],
+          ]
+        }]
+      }, function(c) { // 图表初始化完毕后的会掉函数
+          // 环形图圆心
+          let centerY = c.series[0].center[1],
+            titleHeight = parseInt(c.title.styles.fontSize);
+          // 动态设置标题位置
+          c.setTitle({
+            y:centerY + titleHeight/2-6
+          });
+      });
+    },
+    /* 绘制买手饼状图 */
+    toDrawBrush(){
+      let chart = Highcharts.chart('indexBrush', {
+        colors: ['#0A7BCB','#0899FD','#4CB8FE','#8ED1FE'],
+        credits:{
+          enabled:false
+        },
+        chart: {
+          type:'pie',
+          spacing : [0, 0 , 0, 0],
+          margin: [0, 0, 0, -70]
+        },
+        title: {
+          floating:true,
+          x:-35,  
+          text: '发布人总计<br/>999009',
+          style:{ "color": "#333333", "fontSize": "10px" }
+        },
+        tooltip: {
+          pointFormat: '{series.name}占比:<b>{point.y}%</b>'
+        },
+        legend: {
+          align: 'right',
+          verticalAlign: 'middle',
+          /* floating: true, */
+          itemStyle:{ 
+            color: "#333333", 
+            cursor: "pointer", 
+            fontSize: "12px", 
+            weight: "100px" 
+          },
+          layout:'vertical'
+        },
+        plotOptions: {
+          pie: {
+            innerSize: 100,
+            depth: 25,
+            dataLabels: {
+              enabled: true,
+              distance: -15,
+              format:'<b>{point.y}%</b>',
+              style: {
+                color: 'white',
+                fontSize:'12px'
+              }
+            },
+            showInLegend: true,
+            allowPointSelect: true,
+            cursor: 'pointer'
+          }
+        },
+        series: [{
+          type: 'pie',
+          innerSize: '50%',
+          name: '作者数量',
+          /* 百分比 */
+          data: [
+            ['高级用户',40],
+            ['普通用户',50],
+            ['新手上路',10]
+          ]
+        }]
+      }, function(c) {
+          // 环形图圆心
+          let centerY = c.series[0].center[1],
+            titleHeight = parseInt(c.title.styles.fontSize);
+          // 动态设置标题位置
+          c.setTitle({
+            y:centerY + titleHeight/2-6
+          });
+      });
+    },
   }
+}
 </script>
+<style>
+  /* 设置表格的头部背景 */
+  #index .el-table__header thead  tr th{
+    background:none;
+  }
+</style>
+<style lang="scss" scoped>
+  #index{
+    font-size:14px;
+    /* 设置外边距 */
+    .index-num{
+      margin:5px 0 15px 0;
+      /* 设置4块div统一的样式 */
+      .index-num-one,.index-num-two,.index-num-three,.index-num-four{
+        color: white;
+        background:rgb(39, 169, 227);
+        border-radius: 5px;
+        padding:20px 30px;
+        &>div{
+          margin-bottom:10px;
+        }
+        &>div:last-child{
+          margin-bottom:0px;
+        }
+      }
+      .index-num-two{
+        background:rgb(40, 183, 121);
+      }
+      .index-num-three{
+        background:rgb(255, 183, 72);
+      }
+      .index-num-four{
+        background:rgb(34, 85, 164);
+      }
+      .index-curve-option{
+        margin-bottom:5px;
+      }
+    }
+    .index-news{
+      margin-top:20px;
+      .news,.posts,.servers{
+        padding:5px;
+      }
+      .news{
+        border-top:2px solid rgb(34, 85, 164);
+      }
+      .posts{
+        border-top:2px solid rgb(40, 183, 121);
+      }
+      .servers{
+        border-top:2px solid #F56C6C;
+      }
+      .index-title{
+        overflow: hidden;
+        &>div:first-child{
+          float: left;
+        }
+        &>div:last-child{
+          float: right;
+          margin-right:10px;
+          font-size:12px;
+        }
+      }
+    }
+    
+  }
+</style>
