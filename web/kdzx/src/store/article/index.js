@@ -3,7 +3,7 @@ export default {
   namespaced: true,
   state: {
     article: [],
-    page: 1,
+    page: 0,
     total: 10,
     pageSize: 5,
     categoryId: null

@@ -62,8 +62,9 @@
 			<el-dialog
 				:title=title
 				:visible.sync="dialogVisible"
-				width="50%"
+				width="85%"
 				>
+				<!-- {{articleForm}} -->
 				<!-- 表单开始 -->
 			<el-form label-position="right" label-width="80px" :model="articleForm">
 				<el-form-item label="文章名称">
@@ -75,17 +76,19 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="列表样式" >
-				<ul style="list-style:none;padding:0" class="list_style">
-					<li :class="{current:articleForm.liststyle=='style-one'}" @click="articleForm.liststyle = 'style-one'">
-						<img src="@/assets/form_images/style-one.jpg" alt="图片丢了">
+				<ul class="list_style">
+					<li class="style_one" :class="{current:articleForm.liststyle=='style-one'}" @click="articleForm.liststyle = 'style-one'">
+						<img src="@/assets/form_images/1.jpg" alt="图片丢了">
 					</li>
-					<li :class="{current:articleForm.liststyle=='style-two'}"  @click="articleForm.liststyle = 'style-two'">
-						<img src="@/assets/form_images/style-two.jpg" alt="图片丢了">
+					<li class="style_two" :class="{current:articleForm.liststyle=='style-two'}"  @click="articleForm.liststyle = 'style-two'">
+						<img src="@/assets/form_images/2.jpg" alt="图片丢了">
 					</li>
 				</ul>
 			</el-form-item>
 			<el-form-item label="正文">
-				<el-input type="textarea" v-model="articleForm.content"></el-input>
+				<!-- <el-input type="textarea" v-model="articleForm.content"></el-input> -->
+				<!-- 富文本编辑器 -->
+		    <mavon-editor ref="articleContent" v-model="articleForm.content"/>
 			</el-form-item>
 			</el-form>
 				<!-- 表单结束 -->
@@ -157,7 +160,21 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 	.article_top{
 		margin-bottom: 1em;
 	}
+	.list_style >li {
+		list-style: none;
+		border: 1px solid #ededed;
+		border-radius: 3px;
+		padding: .5em;
+	}
 	.list_style >li.current {
 		border-color: #409eff;
+	}
+	.list_style >li.style_one {
+		float: left;
+		margin-left: -40px;
+	}
+	.list_style >li.style_two {
+		margin-left: 220px;
+		width: 220px;
 	}
 </style>
