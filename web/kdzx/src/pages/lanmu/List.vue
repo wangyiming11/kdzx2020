@@ -44,8 +44,9 @@
 		  :visible.sync="dialogVisible"
 		  width="30%"
 		  >
+		  <!-- {{categoriesForm.parentId}} -->
 		  <!-- 表单开始 -->
-		 <el-form label-position="right" label-width="80px" :model="categoriesForm">
+		 <el-form label-position="right" label-width="80px" :model="categoriesForm">\
 		  <el-form-item label="栏目名称">
 		    <el-input v-model="categoriesForm.name"></el-input>
 		  </el-form-item>
@@ -74,7 +75,7 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 			return {
 				multipleSelection:[],
 				dialogVisible: false,
-				categoriesForm:{},
+				categoriesForm:{parentId:''},
 				title:''
 			}
 		},
@@ -145,21 +146,29 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 		        })
 				
   			 },
+
   			 // 修改栏目信息
   			 updata(data){
+  			 	this.categoriesForm.name = data.name
+  			 	this.categoriesForm.comment = data.comment
+  			 	this.categoriesForm.parentId = data.parent.id
+  			 	this.categoriesForm.id = data.id
   			 	this.dialogVisible = true
-				this.categoriesForm = data
+				
 				this.title = '修改栏目'
   			 },
   			 // 点击新增按钮
   			 toAdd(){
   			 	this.dialogVisible = true
   			 	this.title = '新增栏目'
+  			 	this.categoriesForm = {}
   			 },
   			 // 保存栏目
 			 save(){
 				this.dialogVisible = false
-				this.saveCategories(this.categoriesForm)
+				this.saveCategories(this.categoriesForm).then(r=>{
+					this.loadCategories()
+				})
 			 },
   			 // 多选框
   			 handleSelectionChange(val){
