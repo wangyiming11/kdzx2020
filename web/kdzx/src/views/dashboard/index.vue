@@ -1,102 +1,108 @@
 <!--首页-->
 <template>
   <div id="index">
-    <el-row :gutter="20" class="index-num">
-      <el-col :span="6">
-        <div class="index-num-one">
-          <div>今日浏览用户：<span>320</span>人</div>
-          <div>今日注册用户：<span>28</span>人</div>
-          <div>总注册用户：<span>32</span>人</div>
+    <el-container>
+      <el-aside width="200px">
+        <el-row :gutter="24" class="index-num">
+          <el-col :span="24">
+            <div class="index-num-one">
+              <div>今日浏览用户：<span>320</span>人</div>
+              <div>今日注册用户：<span>28</span>人</div>
+              <div>总注册用户：<span>32</span>人</div>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="index-num-two">
+              <div>今日发布作家：<span>320</span>人</div>
+              <div>今日注册作家：<span>28</span>人</div>
+              <div>总发布作家：<span>32</span>人</div>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="index-num-three">
+              <div>作品类别：<span>320</span>种</div>
+              <div>平均发布量：<span>28</span>种</div>
+              <div>待发布量：<span>32</span>种</div>
+            </div>
+          </el-col>
+          <el-col :span="24">
+            <div class="index-num-four">
+              <div>今日用户评论：<span>320</span>条</div>
+              <div>今日作家回复：<span>28</span>条</div>
+              <div>今日总评论：<span>466</span>条</div>
+            </div>
+          </el-col>
+        </el-row>
+      </el-aside>
+      <el-main>
+        <div class="index-curve">
+          <el-row>
+            <el-col :span="18">
+              <div class="index-curve-chart">
+                <div id="indexOrder" style="min-width:400px;height:300px"></div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="index-curve-chart">
+                <div id="indexBusiness" style="min-width:200px;height:150px"></div>
+              </div>
+              <div class="index-curve-chart">
+                <div id="indexBrush" style="min-width:200px;height:150px"></div>
+              </div>
+            </el-col>
+          </el-row>
         </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="index-num-two">
-          <div>今日发布作家：<span>320</span>人</div>
-          <div>今日注册作家：<span>28</span>人</div>
-          <div>总发布作家：<span>32</span>人</div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="index-num-three">
-          <div>作品类别：<span>320</span>种</div>
-          <div>平均发布量：<span>28</span>种</div>
-          <div>待发布量：<span>32</span>种</div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="index-num-four">
-          <div>今日用户评论：<span>320</span>条</div>
-          <div>今日作家回复：<span>28</span>条</div>
-          <div>今日总评论：<span>466</span>条</div>
-        </div>
-      </el-col>
-    </el-row>
-    <div class="index-curve">
-      <el-row>
-        <el-col :span="18">
-          <div class="index-curve-chart">
-            <div id="indexOrder" style="min-width:400px;height:300px"></div>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="index-curve-chart">
-            <div id="indexBusiness" style="min-width:200px;height:150px"></div>
-          </div>
-          <div class="index-curve-chart">
-            <div id="indexBrush" style="min-width:200px;height:150px"></div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
-    <div class="index-news">
-      <el-row :gutter='20'>
-        <el-col :span="8">
-          <div class="news">
-            <div class="index-title">
-              <div>最新发布</div>
-              <div @click="toVouncher" class="linkSpan">更多>></div>
-            </div>
-            <div class="index-content">
-              <el-table :data="rechargeData" style="width:100%;font-size:12px;">
-                <el-table-column align="left" prop="id" label="作品ID"></el-table-column>
-                <el-table-column align="center" prop="money" label="类别编号"></el-table-column>
-                <el-table-column align="right" prop="name" label="作者"></el-table-column>
-              </el-table>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="posts">
-            <div class="index-title">
-              <div>最新发布</div>
-              <div @click="toVouncher" class="linkSpan">更多>></div>
-            </div>
-            <div class="index-content">
-              <el-table :data="advanceData" style="width:100%;font-size:12px;">
-                <el-table-column align="left" prop="id" label="作品ID"></el-table-column>
-                <el-table-column align="center" prop="money" label="作品编号"></el-table-column>
-                <el-table-column align="right" prop="name" label="作者"></el-table-column>
-              </el-table>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="servers">
-            <div class="index-title">
-              <div>最新日志</div>
-              <div @click="toLogs" class="linkSpan">更多>></div>
-            </div>
-            <div class="index-content">
-              <el-table :data="logData" style="width:100%;font-size:12px;">
-                <el-table-column align="left" prop="id" label="日志ID"></el-table-column>
-                <el-table-column align="center" prop="content" label="内容"></el-table-column>
-                <el-table-column align="right" prop="name" label="操作者"></el-table-column>
-              </el-table>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+        <!-- <div class="index-news">
+          <el-row :gutter='20'>
+            <el-col :span="8">
+              <div class="news">
+                <div class="index-title">
+                  <div>最新发布</div>
+                  <div @click="toVouncher" class="linkSpan">更多>></div>
+                </div>
+                <div class="index-content">
+                  <el-table :data="rechargeData" style="width:100%;font-size:12px;">
+                    <el-table-column align="left" prop="id" label="作品ID"></el-table-column>
+                    <el-table-column align="center" prop="artid" label="类别编号"></el-table-column>
+                    <el-table-column align="right" prop="name" label="作者"></el-table-column>
+                  </el-table>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="posts">
+                <div class="index-title">
+                  <div>最新发布</div>
+                  <div @click="toVouncher" class="linkSpan">更多>></div>
+                </div>
+                <div class="index-content">
+                  <el-table :data="advanceData" style="width:100%;font-size:12px;">
+                    <el-table-column align="left" prop="id" label="作品ID"></el-table-column>
+                    <el-table-column align="center" prop="artid" label="作品编号"></el-table-column>
+                    <el-table-column align="right" prop="name" label="作者"></el-table-column>
+                  </el-table>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="servers">
+                <div class="index-title">
+                  <div>最新日志</div>
+                  <div @click="toLogs" class="linkSpan">更多>></div>
+                </div>
+                <div class="index-content">
+                  <el-table :data="logData" style="width:100%;font-size:12px;">
+                    <el-table-column align="left" prop="id" label="日志ID"></el-table-column>
+                    <el-table-column align="center" prop="content" label="内容"></el-table-column>
+                    <el-table-column align="right" prop="name" label="操作者"></el-table-column>
+                  </el-table>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </div> -->
+      </el-main>
+    </el-container>
   </div>
 </template>
 <script>
@@ -108,71 +114,71 @@ export default {
    
   },
   data(){
-    return {
-      rechargeData:[{
-        id:1001,
-        money:10,
-        name:'一天'
-      },{
-        id:1002,
-        money:101,
-        name:'世界'
-      },{
-        id:1003,
-        money:21,
-        name:'走下去'
-      },{
-        id:1004,
-        money:15,
-        name:'回忆'
-      },{
-        id:1004,
-        money:78,
-        name:'等待'
-      }],
-      advanceData:[{
-        id:1001,
-        money:33,
-        name:'啦啦啦'
-      },{
-        id:1002,
-        money:76,
-        name:'问问'
-      },{
-        id:1003,
-        money:98,
-        name:'天天'
-      },{
-        id:1004,
-        money:12,
-        name:'uu'
-      },{
-        id:1004,
-        money:68,
-        name:'阿萨法'
-      }],
-      logData:[{
-        id:1001,
-        content:'审核XXX通过',
-        name:'1号选手'
-      },{
-        id:1001,
-        content:'添加用户',
-        name:'1号选手'
-      },{
-        id:1001,
-        content:'删除用户',
-        name:'1号选手'
-      },{
-        id:1001,
-        content:'发布公告',
-        name:'1号选手'
-      },{
-        id:1001,
-        content:'撤销发布',
-        name:'1号选手'
-      }],
-    };
+    // return {
+    //   rechargeData:[{
+    //     id:1001,
+    //     artid:10,
+    //     name:'一天'
+    //     },{
+    //       id:1002,
+    //       artid:101,
+    //       name:'世界'
+    //     },{
+    //       id:1003,
+    //       artid:21,
+    //       name:'走下去'
+    //     },{
+    //       id:1004,
+    //       artid:15,
+    //       name:'回忆'
+    //     },{
+    //       id:1004,
+    //       artid:78,
+    //       name:'等待'
+    //     }],
+    //     advanceData:[{
+    //       id:1001,
+    //       artid:33,
+    //       name:'啦啦啦'
+    //     },{
+    //       id:1002,
+    //       artid:76,
+    //       name:'问问'
+    //     },{
+    //       id:1003,
+    //       artid:98,
+    //       name:'天天'
+    //     },{
+    //       id:1004,
+    //       artid:12,
+    //       name:'uu'
+    //     },{
+    //       id:1004,
+    //       artid:68,
+    //       name:'阿萨法'
+    //     }],
+    //   logData:[{
+    //     id:1001,
+    //     content:'审核XXX通过',
+    //     name:'1号选手'
+    //     },{
+    //       id:1001,
+    //       content:'添加用户',
+    //       name:'1号选手'
+    //     },{
+    //       id:1001,
+    //       content:'删除用户',
+    //       name:'1号选手'
+    //     },{
+    //       id:1001,
+    //       content:'发布公告',
+    //       name:'1号选手'
+    //     },{
+    //       id:1001,
+    //       content:'撤销发布',
+    //       name:'1号选手'
+    //     }],
+    // };
   },
   mounted() {
     this.toDraw();
@@ -180,14 +186,6 @@ export default {
     this.toDrawBrush();
   },
   methods:{
-    //跳转到资讯页面
-    toVouncher(){
-      this.$router.push('@pages/article');
-    },
-    //跳转到栏目页面
-    toLogs(){
-      this.$router.push('/logs/index');
-    },
     //绘制堆叠柱状图
     toDraw(){
       var chart = Highcharts.chart('indexOrder', {
@@ -262,69 +260,130 @@ export default {
     },
     /* 绘制商家饼状图 */
     toDrawBusiness(){
-      let chart = Highcharts.chart('indexBusiness', {
-        colors: ['#0A7BCB','#0899FD','#4CB8FE','#8ED1FE'],
+      var chart = Highcharts.chart('indexBusiness', {
+        colors: ['#62BA15','gray'],
         credits:{
           enabled:false
         },
-        chart: {
-          type:'pie',
-          spacing : [0, 0 , 0, 0],
-          margin: [0, 0, 0, -70]
+        chart:{
+          margin:[0,0,0,0]
         },
         title: {
-          floating:true,
-          x:-35,
-          text: '用户总计<br/>999009',
-          style:{ "color": "#333333", "fontSize": "10px" }
+          text: ''
         },
-        tooltip: {
-          pointFormat: '{series.name}占比:<b>{point.y}%</b>'
+        xAxis: {
+          visible:false,
+          title: {
+            text: '就业人数'
+          }
+        },
+        yAxis: {
+          visible:false,
+          title: {
+            text: '就业人数'
+          }
         },
         legend: {
+          enabled:false,
+          layout: 'vertical',
           align: 'right',
-          verticalAlign: 'middle',
-          floating: true,
-          layout:'vertical'
+          verticalAlign: 'middle'
         },
         plotOptions: {
-          pie: {
-            innerSize: 100,
-            depth: 25,
-            dataLabels: {
-              enabled: true,
-              distance: -15,
-              format:'<b>{point.y}%</b>',
-              style: {
-                color: 'white',
-                fontSize:'12px'
-              }
+          series: {
+            label: {
+              connectorAllowed: false
             },
-            showInLegend: true,
-            allowPointSelect: true,
-            cursor: 'pointer'
+            pointStart: 2010
           }
         },
         series: [{
-          type: 'pie',
-          innerSize: '50%',
-          name: '用户数量',
-          /* 百分比 */
-          data: [
-            ['高级用户',30],
-            ['普通用户',30],
-            ['新手上路',40],
-          ]
-        }]
-      }, function(c) { // 图表初始化完毕后的会掉函数
-          // 环形图圆心
-          let centerY = c.series[0].center[1],
-            titleHeight = parseInt(c.title.styles.fontSize);
-          // 动态设置标题位置
-          c.setTitle({
-            y:centerY + titleHeight/2-6
-          });
-      });
+          name: ' ',
+          data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        }, {
+          name: ' ',
+          data: [11744, 17722, 16005, 19771, 20185, 24377, 32147, 39387]
+        }],
+        responsive: {
+          rules: [{
+            condition: {
+              maxWidth: 500
+            },
+            chartOptions: {
+              legend: {
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom'
+              }
+            }
+          }]
+        }
+        });
+
+      // let chart = Highcharts.chart('indexBusiness', {
+      //   colors: ['#0A7BCB','#0899FD','#4CB8FE','#8ED1FE'],
+      //   credits:{
+      //     enabled:false
+      //   },
+      //   chart: {
+      //     type:'pie',
+      //     spacing : [0, 0 , 0, 0],
+      //     margin: [0, 0, 0, -70]
+      //   },
+      //   title: {
+      //     floating:true,
+      //     x:-35,
+      //     text: '用户总计<br/>999009',
+      //     style:{ "color": "#333333", "fontSize": "10px" }
+      //   },
+      //   tooltip: {
+      //     pointFormat: '{series.name}占比:<b>{point.y}%</b>'
+      //   },
+      //   legend: {
+      //     align: 'right',
+      //     verticalAlign: 'middle',
+      //     floating: true,
+      //     layout:'vertical'
+      //   },
+      //   plotOptions: {
+      //     pie: {
+      //       innerSize: 100,
+      //       depth: 25,
+      //       dataLabels: {
+      //         enabled: true,
+      //         distance: -15,
+      //         format:'<b>{point.y}%</b>',
+      //         style: {
+      //           color: 'white',
+      //           fontSize:'12px'
+      //         }
+      //       },
+      //       showInLegend: true,
+      //       allowPointSelect: true,
+      //       cursor: 'pointer'
+      //     }
+      //   },
+      //   series: [{
+      //     type: 'pie',
+      //     innerSize: '50%',
+      //     name: '用户数量',
+      //     /* 百分比 */
+      //     data: [
+      //       ['高级用户',30],
+      //       ['普通用户',30],
+      //       ['新手上路',40],
+      //     ]
+      //   }]
+      // }, function(c) { // 图表初始化完毕后的会掉函数
+      //     // 环形图圆心
+      //     let centerY = c.series[0].center[1],
+      //       titleHeight = parseInt(c.title.styles.fontSize);
+      //     // 动态设置标题位置
+      //     c.setTitle({
+      //       y:centerY + titleHeight/2-6
+      //     });
+      // });
+      
     },
     /* 绘制买手饼状图 */
     toDrawBrush(){
