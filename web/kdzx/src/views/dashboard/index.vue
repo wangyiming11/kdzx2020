@@ -8,21 +8,21 @@
             <div class="index-num-one">
               <div>今日浏览用户：<span>320</span>人</div>
               <div>今日注册用户：<span>28</span>人</div>
-              <div>总注册用户：<span>32</span>人</div>
+              <div>总注册用户：<span>{{total.user}}</span>人</div>
             </div>
           </el-col>
           <el-col :span="24">
             <div class="index-num-two">
               <div>今日发布作家：<span>320</span>人</div>
               <div>今日注册作家：<span>28</span>人</div>
-              <div>总发布作家：<span>32</span>人</div>
+              <div>总发布作家：<span>{{total.article}}</span>人</div>
             </div>
           </el-col>
           <el-col :span="24">
             <div class="index-num-three">
-              <div>作品类别：<span>320</span>种</div>
+              <div>作品类别：<span>{{total.category}}</span>种</div>
               <div>平均发布量：<span>28</span>种</div>
-              <div>待发布量：<span>32</span>种</div>
+              <div>待发布量：<span>12</span>种</div>
             </div>
           </el-col>
           <el-col :span="24">
@@ -58,10 +58,14 @@
 </template>
 <script>
 import Highcharts from 'highcharts'
+import axios from '@/http/axios'
+import qs from 'qs'
 export default {
   name: 'Index',
-  computed: {
-   
+  data(){
+    return{
+      total:{}
+    }
   },
   mounted() {
     this.toDraw();
@@ -279,6 +283,14 @@ export default {
           });
       });
     },
+    loadArticle(){
+      axios.get('/manager/statistics/getCount').then((res)=>{
+        this.total = res.data.data
+      });
+    },
+  },
+  created(){
+    this.loadArticle()
   }
 }
 </script>

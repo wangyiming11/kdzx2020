@@ -5,7 +5,7 @@
 		</div>
 		<div class="content">
 			<el-row :gutter="12">
-			   <el-col :span="6" v-for='item in users'>
+			   <el-col :span="6" v-for='item in users' :key='item.id'>
 			    <el-card shadow="hover">
 			      	<div class="image">
 			      		<img :src="item.userface">
