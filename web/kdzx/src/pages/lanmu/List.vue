@@ -31,7 +31,7 @@
 	      </el-table-column>
 	      <el-table-column width="150" label="操作" align='center'>
 	      	<template slot-scope='{row}'>
-	      		<i class="fa fa-trash" @click='deleteLanmu(row.id)'></i>
+	      		<i class="fa fa-trash" @click='deleteLanmu(row.id)'></i>&emsp;
 	      		<i class="fa fa-pencil" @click='updata(row)'></i>
 	      	</template>
 	      </el-table-column>
