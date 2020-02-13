@@ -73,7 +73,7 @@
 				:visible.sync="dialogVisible"
 				width="85%"
 				>
-				{{articleForm}}
+				<!-- {{articleForm}} -->
 				<!-- 表单开始 -->
 			<el-form label-position="right" label-width="80px" :model="articleForm">
 				<el-form-item label="文章标题">
@@ -171,18 +171,30 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				},
 				// 3.打开修改模态框
 				toEditHandler(row) {
-					let article = row
-					article.categoryId = article.category.id;
-					//1. 删除category,添加categoryId
-					delete article.category;
+					// let article = row
+					// article.categoryId = article.category.id;
+					// //1. 删除category,添加categoryId
+					// delete article.category;
 
-					//删除空字段
-					for(let key in article){
-						let val=article[key]
-						if(!val){
-							delete article[key];
-						}
-					};
+					// //删除空字段
+					// for(let key in article){
+					// 	let val=article[key]
+					// 	if(!val){
+					// 		delete article[key];
+					// 	}
+					// }
+					let article = {
+						id:row.id,
+						title:row.title,
+						categoryId:row.category.id,
+						liststyle:row.liststyle,
+						publishtime:row.publishtime,
+						readtimes:row.readtimes,
+						status:row.status,
+						thumbup:row.thumbup,
+						thumbdown:row.thumbdown,
+						content:row.content
+					}
 					this.title='修改文章'
 					this.articleForm = article
 					this.dialogVisible=true
