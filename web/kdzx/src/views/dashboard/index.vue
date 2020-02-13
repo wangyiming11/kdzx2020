@@ -4,28 +4,28 @@
     <el-container>
       <el-aside width="200px">
         <el-row class="index-num">
-          <el-col :span="24">
+          <el-col :span="22">
             <div class="index-num-one">
               <div>今日浏览用户：<span>320</span>人</div>
               <div>今日注册用户：<span>28</span>人</div>
               <div>总注册用户：<span>{{total.user}}</span>人</div>
             </div>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="22">
             <div class="index-num-two">
               <div>今日发布作家：<span>320</span>人</div>
               <div>今日注册作家：<span>28</span>人</div>
               <div>总发布作家：<span>{{total.article}}</span>人</div>
             </div>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="22">
             <div class="index-num-three">
               <div>作品类别：<span>{{total.category}}</span>种</div>
               <div>平均发布量：<span>28</span>种</div>
               <div>待发布量：<span>12</span>种</div>
             </div>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="22">
             <div class="index-num-four">
               <div>今日用户评论：<span>320</span>条</div>
               <div>今日作家回复：<span>28</span>条</div>
@@ -305,59 +305,29 @@ export default {
     font-size:14px;
     /* 设置外边距 */
     .index-num{
-      margin:5px 0 15px 0;
+      margin:15px 0 15px 0;
+      float:right;
       /* 设置4块div统一的样式 */
       .index-num-one,.index-num-two,.index-num-three,.index-num-four{
         color: white;
-        background:rgb(39, 169, 227);
+        background:rgb(122, 205, 243);
         border-radius: 5px;
-        padding:20px 30px;
-        &>div{
-          margin-bottom:10px;
-        }
-        &>div:last-child{
-          margin-bottom:0px;
-        }
+        padding:10px 20px;
+        margin:20px 5px 15px 0;
       }
       .index-num-two{
-        background:rgb(40, 183, 121);
+        background:rgb(48, 216, 143);
       }
       .index-num-three{
-        background:rgb(255, 183, 72);
+        background:rgb(253, 198, 114);
       }
       .index-num-four{
-        background:rgb(34, 85, 164);
+        background:rgb(34, 116, 240);
       }
       .index-curve-option{
         margin-bottom:5px;
       }
     }
-    .index-news{
-      margin-top:20px;
-      .news,.posts,.servers{
-        padding:5px;
-      }
-      .news{
-        border-top:2px solid rgb(34, 85, 164);
-      }
-      .posts{
-        border-top:2px solid rgb(40, 183, 121);
-      }
-      .servers{
-        border-top:2px solid #F56C6C;
-      }
-      .index-title{
-        overflow: hidden;
-        &>div:first-child{
-          float: left;
-        }
-        &>div:last-child{
-          float: right;
-          margin-right:10px;
-          font-size:12px;
-        }
-      }
-    }
-    
+   
   }
 </style>
