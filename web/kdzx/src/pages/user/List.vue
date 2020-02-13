@@ -97,11 +97,13 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
   			// 新增用户
   			adduser(){
 				this.dialogVisible = true
+				this.userForm = {}
   			},
   			// 保存用户
   			savaUser(){
   				this.dialogVisible = false
   				this.userForm.enabled = false
+  				this.userForm.userface = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581326895641&di=dda42443eb3e835a91f0398f00b65909&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F35%2F34%2F19300001295750130986345801104.jpg'
 				this.saveUser(this.userForm).then((r)=>{
 					this.loadUsers()
 				})
@@ -109,11 +111,14 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
   			},
   			// 改变用户的状态
   			changeStatus(item){
+  				// console.log(item.enabled)
   				var obj={
   					id:item.id,
-  					status:!item.enabled
+  					status:item.enabled
   				}
-				this.changeUserStatus(obj)
+				this.changeUserStatus(obj).then(r=>{
+					this.loadUsers()
+				})
   			}
   		}
 	}
