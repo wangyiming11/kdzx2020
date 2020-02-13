@@ -3,7 +3,8 @@ export default {
   namespaced: true,
   state: {
     article: [],
-    total: 10
+    total: 10,
+    categories:[]
   },
   mutations: {
     // 1.重置文章
@@ -14,11 +15,10 @@ export default {
     resetTotal (state, total) {
       state.total = total
     },
-    // // 3.重置page
-    // resetPage (state, page) {
-    //   state.page = page - 1
-    //   console.log(state.page)
-    // }
+    // 3.重置栏目信息
+    changeCategories (state, categories) {
+      state.categories = categories
+    }
   },
   actions: {
     // 1.分页加载文章
@@ -42,6 +42,12 @@ export default {
     // 4. 批量删除文章
     async batchDelectArticle (context, ids) {
       await axios.post('/manager/article/batchDeleteArticle', ids)
+    },
+    // 5.加载栏目信息
+    async loadCategories (context) {
+      axios.get('/manager/category/findAllCategory').then((res) => {
+        context.commit('changeCategories', res.data.data)
+      })
     }
   }
 }

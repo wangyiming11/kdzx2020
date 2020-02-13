@@ -143,13 +143,13 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 					categoryId: this.categoryId
 				}
 				this.loadArticle(payload)
+				this.loadCategories()
 			},
 		  computed: {
-				...mapState('Article',['article','total']),
-				...mapGetters('Lanmu',['categories'])
+				...mapState('Article',['article','total','categories']),
 			},
 			methods: {
-				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle']),
+				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle','loadCategories']),
 				// 1.分页page处理
 				handleCurrentChange (page) {
 					this.page = page -1
