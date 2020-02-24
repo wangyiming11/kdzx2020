@@ -1,4 +1,4 @@
-# jz_customer
+# kd_customer
 
 ## Project setup
 ```

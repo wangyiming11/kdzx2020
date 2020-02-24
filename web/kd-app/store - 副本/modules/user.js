@@ -34,7 +34,7 @@ export default {
     // 退出
     async logout(context){
       // 1. 请求后台退出
-      await post('/manager/user/logout');
+      await post('/user/logout');
       // 2. 清理本地缓存
       removeToken();
       // 3. 清理store

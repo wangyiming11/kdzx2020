@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import Manager from '../views/manager/Index'
 import Home from '../views/manager/Home'
 import User from '../views/manager/User'
+import UserEdit from '../views/manager/UserEdit'
+import Mangerarticle from '../views/manager/Mangerarticle'
 // 登录页面
 import Login from '../views/Login'
 import { getToken } from '../utils/auth'
@@ -42,6 +44,12 @@ const routes = [
       },{
         path: 'user',
         component: User,
+      },{
+        path: 'useredit',
+        component: UserEdit,
+      },{
+        path: 'mangerarticle',
+        component: Mangerarticle,
       }]
   },
   {

@@ -4,6 +4,14 @@
     <div class="header">
       看点资讯精选
     </div>
+    <div class="content">
+      <van-button type="primary" size="small">小型按钮</van-button>
+      <van-button type="primary" size="small">小型按钮</van-button>
+      <van-button type="primary" size="small">小型按钮</van-button>
+      <van-button type="primary" size="small">小型按钮</van-button>
+      <van-button type="primary" size="small">小型按钮</van-button>
+
+    </div>
   </div>
 </template>
 <script>
@@ -23,10 +31,10 @@ export default {
 </script>
 <style scoped>
 .header {
-  height: 30px;
-  line-height: 30px;
+  height: 50px;
+  line-height: 50px;
   background-color: #2E8FF4;
-  font-size: 16px;
+  font-size: 17px;
   color: white;
   font-weight: bold;
   text-align: center;
