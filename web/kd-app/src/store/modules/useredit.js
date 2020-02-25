@@ -2,32 +2,26 @@ import {get, post} from '../../http/axios'
 export default {
     namespaced:true,
     state: {
-        addresses:[]
+        users:[]
     },
     mutations: {
-        refreshAddresses(state,addresses){
-            state.addresses = addresses;
+        refreshUsers(state,users){
+            state.users = users;
         }
     },
     actions: {
         // 根据当前用户id查询所有地址
-        async findAllAddresses({commit,rootState}){
-            // console.log('rootState',rootState)
-            let id = rootState.user.info.id
-            let response = await get('/address/findByCustomerId',{id})
-            commit('refreshAddresses',response.data)
+        async findAllUsers({commit,rootState}){
+            console.log('rootState',rootState)
+            let name = rootState.user.info.name
+            let response = await get('/manager/user/findUserByUsername ',{name})
+            commit('refreshUsers',response.data)
         },
         // 添加修改地址
-        async SaveOrUpdateAddress({dispatch},form){
-            let response = await post('/address/saveOrUpdate',form)
-            dispatch('findAllAddresses')
+        async SaveOrUpdateUser({dispatch},form){
+            let response = await post('/manager/user/saveOrUpdateUser',form)
+            dispatch('findAllUsers')
             return response
-        },
-        // 删除地址
-        async deleteAddressById({dispatch},id){
-            let response = await get('/address/deleteById',{id})
-            // console.log("id",response.data)
-            dispatch('findAllAddresses',response.data)
         }
     }
 }

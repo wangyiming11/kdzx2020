@@ -4,28 +4,56 @@
     <div class="header">
       看点资讯精选
     </div>
-    <div class="content">
-      <van-button type="primary" size="small">小型按钮</van-button>
-      <van-button type="primary" size="small">小型按钮</van-button>
-      <van-button type="primary" size="small">小型按钮</van-button>
-      <van-button type="primary" size="small">小型按钮</van-button>
-      <van-button type="primary" size="small">小型按钮</van-button>
+    <van-tabs>
+      <van-tab 
+      v-for="index in categories.length" 
+      :title="categories[index-1].name">
+        <van-tabs>
+          <van-tab v-for="index in categories.length" :title="categories[index-1].parent.name">
+            内容 
+          </van-tab>
+        </van-tabs>
+      </van-tab>
+    </van-tabs>
 
-    </div>
+    <!-- {{categories}} -->
+    {{articles}}
+
+   
   </div>
 </template>
 <script>
+import {mapState, mapActions} from 'vuex'
+
 export default {
-  data(){
-    return {
-      
-    }
+  computed:{
+    ...mapState('category',['categories']),
+    ...mapState('article',['articles']),
   },
   created(){
-    
+    this.findAllCategories();
+    this.QueryArticles({page:1,pageSize:4});
   },
   methods:{
-    
+    ...mapActions('user',['logout']),
+    ...mapActions('category',['findAllCategories']),
+    ...mapActions('article',['QueryArticles']),
+    // // 页面跳转产品分类，显示更多的栏目
+    // ShowCategoriesHandler(){
+    //   var obj = {
+    //     id:this.categories[0].id,
+    //     activeKey:0
+    //   }
+    //   this.$router.push({path:'/manager/article_list',query:obj})
+    // },
+    // // 栏目区域 页面跳转至商品分类，各个产品
+    // toArticleHandler(id,activeKey){
+    //   this.$router.push({path:'/manager/article',query:{id,activeKey}})
+    // },
+    // // 产品区域 页面跳转商品分类
+    // toArticleListHandler(id,activeKey){
+    //   this.$router.push({path:'/manager/article',query:{id,activeKey}})
+    // },
   }
 }
 </script>

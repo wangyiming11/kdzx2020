@@ -5,7 +5,7 @@ import Manager from '../views/manager/Index'
 import Home from '../views/manager/Home'
 import User from '../views/manager/User'
 import UserEdit from '../views/manager/UserEdit'
-import Mangerarticle from '../views/manager/Mangerarticle'
+import Article from '../views/manager/article/List'
 // 登录页面
 import Login from '../views/Login'
 import { getToken } from '../utils/auth'
@@ -48,8 +48,8 @@ const routes = [
         path: 'useredit',
         component: UserEdit,
       },{
-        path: 'mangerarticle',
-        component: Mangerarticle,
+        path: 'article',
+        component: Article,
       }]
   },
   {

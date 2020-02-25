@@ -20,10 +20,6 @@
     <van-cell icon="records" title="个人信息" is-link to="useredit" />
     <!-- /个人信息 -->
 
-    <!-- 文章管理 -->
-    <van-cell icon="notes-o" title="文章管理" is-link to="mangerarticle" />
-    <!-- /文章管理 -->
-    
     <!-- 联系我们 -->
     <van-cell icon="phone-o" title="联系我们" @click="show = true" />
     <van-overlay :show="show" @click="show = false"  >
@@ -85,9 +81,6 @@ export default {
     // 关闭联系我们模态框
     closeModal(){
       this.show = false
-    },
-    toAddressHandler(){
-      // this.$router.push({path:'/manager/address'})
     },
     logoutHandler(){
       this.logout()
