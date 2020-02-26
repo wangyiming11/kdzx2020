@@ -5,6 +5,7 @@ import Manager from '../views/manager/Index'
 import Home from '../views/manager/Home'
 import User from '../views/manager/User'
 import UserEdit from '../views/manager/UserEdit'
+import ArticleEdit from '../views/manager/ArticleEdit'
 import Article from '../views/manager/article/List'
 // 登录页面
 import Login from '../views/Login'
@@ -47,6 +48,9 @@ const routes = [
       },{
         path: 'useredit',
         component: UserEdit,
+      },{
+        path: 'articleedit',
+        component: ArticleEdit,
       },{
         path: 'article',
         component: Article,

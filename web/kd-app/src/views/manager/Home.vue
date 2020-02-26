@@ -7,17 +7,29 @@
     <van-tabs>
       <van-tab 
       v-for="index in categories.length" 
-      :title="categories[index-1].name">
-        <van-tabs>
-          <van-tab v-for="index in categories.length" :title="categories[index-1].parent.name">
-            内容 
-          </van-tab>
-        </van-tabs>
+      :title="categories[index-1].name" :key="categories[index-1].name">
+        <div class="list" style="margin-top:1em">
+          <van-card
+             v-for="index in articles.length" 
+             :title="articles[index-1].name" 
+             :key="articles[index-1].id"
+            :num="articles[index-1].readtime"
+            :desc="articles[index-1].content"
+            :thumb="articles[index-1].author.userface">
+            <div slot="tags" >
+              <van-tag plain type="default">{{articles[index-1].author.username}}</van-tag>
+              <van-tag plain type="default">{{articles[index-1].author.regTime}}</van-tag>
+            </div>
+            <div slot="footer">
+              <van-button size="mini" to="article">详情</van-button>
+            </div>
+          </van-card>
+        </div> 
       </van-tab>
     </van-tabs>
 
     <!-- {{categories}} -->
-    {{articles}}
+    <!-- {{articles}} -->
 
    
   </div>
@@ -32,10 +44,9 @@ export default {
   },
   created(){
     this.findAllCategories();
-    this.QueryArticles({page:1,pageSize:4});
+    this.QueryArticles();
   },
   methods:{
-    ...mapActions('user',['logout']),
     ...mapActions('category',['findAllCategories']),
     ...mapActions('article',['QueryArticles']),
     // // 页面跳转产品分类，显示更多的栏目

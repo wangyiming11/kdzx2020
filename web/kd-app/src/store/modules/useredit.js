@@ -10,11 +10,11 @@ export default {
         }
     },
     actions: {
-        // 根据当前用户id查询所有地址
+        // 根据当前用户id查询所有信息
         async findAllUsers({commit,rootState}){
             console.log('rootState',rootState)
             let name = rootState.user.info.name
-            let response = await get('/manager/user/findUserByUsername ',{name})
+            let response = await get('/manager/user/findUserByUsername?username='+name)
             commit('refreshUsers',response.data)
         },
         // 添加修改地址

@@ -20,6 +20,10 @@
     <van-cell icon="records" title="个人信息" is-link to="useredit" />
     <!-- /个人信息 -->
 
+     <!-- 发布文章 -->
+    <van-cell icon="records" title="发布文章" is-link to="articleedit" />
+    <!-- /发布文章 -->
+
     <!-- 联系我们 -->
     <van-cell icon="phone-o" title="联系我们" @click="show = true" />
     <van-overlay :show="show" @click="show = false"  >

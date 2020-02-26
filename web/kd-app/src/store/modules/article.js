@@ -27,6 +27,13 @@ export default {
             // })
             console.log('response',response)
             commit('refreshArticles',response.data)
-        }
+
+        },
+         // 添加修改文章
+         async SaveOrUpdateArticle({dispatch},form){
+            let response = await post('/manager/article/saveOrUpdateArticle',form)
+            dispatch('QueryArticles')
+            return response
+        },
     }
  }
