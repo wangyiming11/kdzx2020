@@ -13,18 +13,17 @@ export default {
         }
     },
     mutations :{
+        refreshDetails(state,details){
+            state.details = details
+        },
         refreshArticles(state,articles){
             state.articles = articles
         }
     },
     actions :{
-        // 查找所有商品分类信息
-        async QueryArticles({commit}) {
-            let response = await get('/index/findArticleByCategoryId')
-            // 为产品添加number属性
-            // response.data.list.forEach(item=>{
-            //     item.number = 0;
-            // })
+        // 查找所有文章信息
+        async QueryArticles(commit,id) {
+            let response = await get('/index/findArticleByCategoryId?id='+id)
             console.log('response',response)
             commit('refreshArticles',response.data)
 
@@ -35,5 +34,10 @@ export default {
             dispatch('QueryArticles')
             return response
         },
+        // 根据当前文章id查询文章详情
+        async readArticle(commit,id){
+            let response = await get('index/readArticle?id='+id)
+            commit('refreshdetails',response.data)
+        }
     }
  }

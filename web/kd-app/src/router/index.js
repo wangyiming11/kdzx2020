@@ -6,7 +6,7 @@ import Home from '../views/manager/Home'
 import User from '../views/manager/User'
 import UserEdit from '../views/manager/UserEdit'
 import ArticleEdit from '../views/manager/ArticleEdit'
-import Article from '../views/manager/article/List'
+import Article from '../views/manager/Article'
 // 登录页面
 import Login from '../views/Login'
 import { getToken } from '../utils/auth'

@@ -1,5 +1,8 @@
 <template>
     <div class="useredit">
+        <van-nav-bar
+        title="修改信息"
+        />
         <!-- 顶部导航栏 -->
         <!-- {{users}} -->
         <div class="users" :data="users">
@@ -40,7 +43,7 @@
             <van-button 
                     @click="backListHandler()" 
                     size="large" 
-                    type="warning">确定修改</van-button>
+                    type="info">确定修改</van-button>
         </div>
         <!-- /顶部导航栏 -->
     </div>
@@ -70,7 +73,7 @@ export default {
         this.userface = this.$route.query.userface
     },
     methods: {
-        ...mapActions('useredit',['findAllUsers','SaveOrUpdateUser']),
+        ...mapActions('useredit',['findAllUsers','UpdateUser']),
 
         // 回到个人页面
         backListHandler(){
@@ -93,7 +96,7 @@ export default {
 
 <style>
 .van-col .one{
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #efefef;
     padding:1em
 }
 </style>

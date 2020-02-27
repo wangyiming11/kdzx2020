@@ -18,10 +18,14 @@ export default {
             commit('refreshUsers',response.data)
         },
         // 添加修改地址
-        async SaveOrUpdateUser({dispatch},form){
-            let response = await post('/manager/user/saveOrUpdateUser',form)
-            dispatch('findAllUsers')
-            return response
-        }
+        UpdateUser(context,params){
+            return new Promise((resolve,reject)=>{
+             axios.post('/manager/user/saveOrUpdateUser',params).then((res)=>{
+               resolve(res)
+             }).catch((err)=>{
+               reject(err)
+             })
+         })
+       },
     }
 }
