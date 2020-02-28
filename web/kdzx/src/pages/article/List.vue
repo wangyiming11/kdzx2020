@@ -1,17 +1,42 @@
 <template>
 	<div class="article">
 		<div class="article_top">
-			<el-button type="success" size='small' @click='toAddHandler'>新增</el-button>
-			<el-button type="success" size='small' @click='batchDelect'>批量删除</el-button>
-			<el-select v-model="categoryId" placeholder="请选择栏目" class="select">
-				<el-option
-					v-for="item in categories"
-					:key="item.id"
-					:label="item.name"
-					:value="item.id">
-				</el-option>
-			</el-select>
-			<el-button @click='resetData'>重置</el-button>
+			<el-row :gutter="0">
+				<el-col :span='7'>
+					<el-button type="success" size='small' @click='toAddHandler'>新增</el-button>
+					<el-button type="success" size='small' @click='batchDelect'>批量删除</el-button>
+				</el-col>
+				<el-col :span='9'>
+					<template>
+						<div class="block" offset="10">
+							<el-button size="medium" class="reset" @click="resetData">重置</el-button>
+							<el-date-picker
+								unlink-panels
+								v-model="time"
+								type="daterange"
+								range-separator="至"
+								start-placeholder="开始日期"
+								end-placeholder="结束日期"
+								format="yyyy 年 MM 月 dd 日"
+      					value-format="yyyy-MM-dd">
+							</el-date-picker>
+						</div>
+					</template>
+				</el-col>
+				<el-col :span='4'>
+					<el-input v-model="keywords.words" placeholder='请输入标题关键字'></el-input>
+				</el-col>	
+				<el-col :span='4'>
+					<el-select v-model="categoryId" placeholder="请选择栏目" class='select'>
+						<el-option
+							v-for="item in categories"
+							:key="item.id"
+							:label="item.name"
+							:value="item.id">
+						</el-option>
+					</el-select>
+				</el-col>	
+			</el-row>	
 		</div>
 		<div class="article_content">
 			<!-- 表格开始 -->
@@ -19,24 +44,30 @@
 			@selection-change="selectionChangeHandler">
 	     	<el-table-column
 		      type="selection"
-		      width="100" 
+		      width="50" 
 					align='center'>
 		    </el-table-column>
 		    <el-table-column
 	        prop="id"
 	        label="编号"
-	        width="100"
+	        width="50"
 					align='center'>
 	      </el-table-column>
 	      <el-table-column
 	        prop="title"
 	        label="文章标题"
-	        width="300"
+	        width="200"
 					align='center'>
 	      </el-table-column>
 	      <el-table-column
 	        prop="category.name"
 	        label="所属栏目"
+	        width="150"
+					align='center'>
+	      </el-table-column>
+				<el-table-column
+	        prop="author.nickname"
+	        label="作者"
 	        width="150"
 					align='center'>
 	      </el-table-column>
@@ -53,12 +84,19 @@
 					align='center'>
 	      </el-table-column>
 	      <el-table-column
-	        prop="liststyle"
-	        label="列表样式"
-	        width="150" 
+	        prop="status"
+	        label="状态"
+	        width="100" 
 					align='center'>
 	      </el-table-column>
-	     
+				<el-table-column
+	        label="详情"
+	        width="100" 
+					align='center'>
+					<template slot-scope='{row}'>
+						<el-button type="primary" size="mini" @click="toArticleDetailsHandler(row.id)">查看</el-button>
+					</template>
+	      </el-table-column>
 	      <el-table-column label="操作" align='center'>
 	      	<template slot-scope='{row}'>
 	      		<i class="fa fa-trash" @click='deleteHandler(row.id)'></i>&emsp;
@@ -107,6 +145,64 @@
 				</span>
 			</el-dialog>
 			<!-- 模态框结束 -->
+			<!-- 详情模态框开始 -->
+			<el-dialog title="文章详情" width="50%" :visible.sync="detailsVisible">
+				<el-form :data="articleDetails">
+					<span class="none">{{articleDetails}}</span>
+					<el-row>
+						<el-form-item label="文章标题：">
+							<span>{{articleDetails.title}}</span>
+						</el-form-item>
+					</el-row>
+					<el-row :gutter="20">
+						<el-col :span="6">
+							<el-form-item label="文章作者：">
+								<!-- <span>{{articleDetails.author.nickname}}</span> -->
+							</el-form-item>
+						</el-col>
+						<el-col :span="6">
+							<el-form-item label="所属栏目：">
+								<!-- <span>{{articleDetails.category.name}}</span> -->
+							</el-form-item>
+						</el-col>
+						<el-col :span="6">
+							<el-form-item label="阅读次数：">
+								<span>{{articleDetails.readtimes}}</span>
+							</el-form-item>
+						</el-col>
+						<el-col :span="6">
+							<el-form-item label="状态：">
+								<span>{{articleDetails.status}}</span>
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-row :gutter="20">
+						<el-col :span="12">
+							<el-form-item label="发布时间：">
+								<span>{{articleDetails.publishtime}}</span>
+							</el-form-item>
+						</el-col>
+						<el-col :span="6">
+							<el-form-item label="点赞次数：">
+								<span>{{articleDetails.thumbup}}</span>
+							</el-form-item>
+						</el-col>
+						<el-col :span="6">
+							<el-form-item label="被踩次数：">
+								<span>{{articleDetails.thumbdown}}</span>
+							</el-form-item>
+						</el-col>
+					</el-row>
+					<el-form-item label="文章正文：">
+						<span>{{articleDetails.content}}</span>
+					</el-form-item>
+				</el-form>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="auditHandler(articleDetails.id)">通过审核</el-button>
+					<el-button type="primary" @click="detailsVisible = false">返 回</el-button>
+				</div>
+			</el-dialog>
+			<!-- 详情模态框结束 -->
 			<!-- 分页开始 -->
 			<div class="page">
 				<el-pagination
@@ -129,11 +225,16 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				pageSize: 5,
 				categoryId: null,
 				multipleSelection:[],
-				dialogVisible: false,
+				dialogVisible: false ,
+				detailsVisible: false ,
+				title:'',
 				articleForm:{
 					liststyle:'style-one'
 				},
-				title:''
+				time:[],
+				keywords:{
+					words:''
+				},
 			}
 		},
 			created() {
@@ -146,10 +247,10 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				this.loadCategories()
 			},
 		  computed: {
-				...mapState('Article',['article','total','categories']),
+				...mapState('Article',['article','total','categories','articleDetails']),
 			},
 			methods: {
-				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle','loadCategories']),
+				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle','loadCategories','findArticleById','checkArticle']),
 				// 1.分页page处理
 				handleCurrentChange (page) {
 					this.page = page -1
@@ -170,19 +271,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 					}
 				},
 				// 3.打开修改模态框
-				toEditHandler(row) {
-					// let article = row
-					// article.categoryId = article.category.id;
-					// //1. 删除category,添加categoryId
-					// delete article.category;
-
-					// //删除空字段
-					// for(let key in article){
-					// 	let val=article[key]
-					// 	if(!val){
-					// 		delete article[key];
-					// 	}
-					// }
+				toEditHandler (row) {
 					let article = {
 						id:row.id,
 						title:row.title,
@@ -286,22 +375,91 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				// 8.重置按钮，刷新数据
 				resetData() {
 					this.categoryId = null
+					this.keywords = {}
+					this.time = []
 					let payload = {
 						page: 0,
 						pageSize: this.pageSize,
 					}
 					this.loadArticle(payload)
+				},
+				// 9.点击查看详情
+				toArticleDetailsHandler(id){
+					this.findArticleById(id)
+					this.detailsVisible = true
+				},
+				// 10.审核文章
+				auditHandler(id) {
+					const params = {
+						id:id,
+						status:'已审核'
+					}
+					this.checkArticle(params)
+					.then(() => {
+						this.findArticleById(id)
+						let payload = {
+							page:this.page,
+							pageSize: this.pageSize,
+							categoryId: this.categoryId
+						}
+						this.loadArticle(payload)
+						this.$notify.success({
+							title: '成功',
+							message: '审核成功！'
+						});
+					})
+					.catch(() => {
+						this.$notify.error({
+							title: '错误',
+							message: '重复审核！'
+						});
+					})
 				}
 			},
 			// 监听categoryId的变化，做数据重载
 			watch: {
 				categoryId:function(now,old) {
-					let payload = {
-						page: 0,
+					const beginTime = this.time[0]
+					const endTime = this.time[1]
+					const payload = {
+						page: this.page,
 						pageSize: this.pageSize,
+						beginTime: beginTime,
+						endTime: endTime,
+						keywords: this.keywords.words,
 						categoryId: this.categoryId
 					}
 					this.loadArticle(payload)
+				},
+				time:function(now,old) {
+					const beginTime = this.time[0]
+					const endTime = this.time[1]
+					const payload = {
+						page: this.page,
+						pageSize: this.pageSize,
+						beginTime: beginTime,
+						endTime: endTime,
+						keywords: this.keywords.words,
+						categoryId: this.categoryId
+					}
+					this.loadArticle(payload)
+				},
+				keywords:{
+					function(now,old) {
+						console.log('old'+old)
+						console.log('now'+now)
+						const beginTime = this.time[0]
+						const endTime = this.time[1]
+						const payload = {
+							page: this.page,
+							pageSize: this.pageSize,
+							beginTime: beginTime,
+							endTime: endTime,
+							keywords: this.keywords.words,
+							categoryId: this.categoryId
+						}
+						this.loadArticle(payload)
+					}
 				}
 			}
 	}
@@ -309,6 +467,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 <style type="text/css">
 	.article{
 		padding: 0.5em;
+		
 	}
 	.article_top{
 		margin-bottom: 1em;
@@ -331,6 +490,13 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 		width: 220px;
 	}
 	.select {
-		margin-left: 840px;
+		margin-left: 20px;
+	}
+	.reset {
+		margin-left: 20px;
+		margin-right: 10px;
+	}
+	.none {
+		display: none;
 	}
 </style>

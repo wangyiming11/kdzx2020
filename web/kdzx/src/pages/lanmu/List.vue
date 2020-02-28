@@ -1,42 +1,45 @@
 <template>
 	<div class="lanmu">
-		<div class="lanmu_top">
-			<el-button type="success" size='small' @click='toAdd'>新增</el-button>
-			<el-button type="success" size='small' @click='deleteAll'>批量删除</el-button>
-		</div>
-		<div class="lanmu_content">
-		<!-- 表格开始 -->
-		   <el-table :data="categories" style="width: 100%" size='small' :border='true'
-			@selection-change="handleSelectionChange">
-	     	<el-table-column
-		      type="selection"
-		      width="100" align='center'>
-		    </el-table-column>
-		    <el-table-column
-	        prop="id"
-	        label="编号"
-	         align='center'>
-	      </el-table-column>
-	      <el-table-column
-	        prop="name"
-	        label="栏目名称"
-	        align='center'>
-	      </el-table-column>
-	      <el-table-column
-	        prop="parent.name"
-	        label="父栏目"
-	        align='center'>
-	      </el-table-column>
-	      <el-table-column prop="comment" label="描述" align='center' width="300">
-	      </el-table-column>
-	      <el-table-column width="150" label="操作" align='center'>
-	      	<template slot-scope='{row}'>
-	      		<i class="fa fa-trash" @click='deleteLanmu(row.id)'></i>&emsp;
-	      		<i class="fa fa-pencil" @click='updata(row)'></i>
-	      	</template>
-	      </el-table-column>
-	    </el-table>
-	    <!-- 表格结束 -->
+		<div>
+			<el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click='handlerRelod2_categories'>
+				<el-tab-pane
+					:value="item.id"
+					:key="item.id"
+					v-for="(item, index) in categories"
+					:label="item.name"
+					:name="item.id"
+				>
+					<!-- 表格开始 -->
+					<div class="lanmu_content">
+						<el-table :data="children" style="width: 100%" size='small' :border='true'
+						@selection-change="handleSelectionChange">
+							<el-table-column
+								type="selection"
+								width="100" align='center'>
+							</el-table-column>
+							<el-table-column
+								prop="id"
+								label="编号"
+								align='center'>
+							</el-table-column>
+							<el-table-column
+								prop="name"
+								label="栏目名称"
+								align='center'>
+							</el-table-column>
+							<el-table-column prop="comment" label="描述" align='center' width="300">
+							</el-table-column>
+							<el-table-column width="150" label="操作" align='center'>
+								<template slot-scope='{row}'>
+									<i class="fa fa-trash" @click='deleteLanmu(row.id)'></i>&emsp;
+									<i class="fa fa-pencil" @click='updata(row)'></i>
+								</template>
+							</el-table-column>
+						</el-table>
+					</div>
+					<!-- 表格结束 -->
+				</el-tab-pane>
+			</el-tabs>
 		</div>
 		<!-- 新增栏目模态框开始 -->
 		<el-dialog
@@ -44,9 +47,8 @@
 		  :visible.sync="dialogVisible"
 		  width="30%"
 		  >
-		  <!-- {{categoriesForm.parentId}} -->
 		  <!-- 表单开始 -->
-		 <el-form label-position="right" label-width="80px" :model="categoriesForm">\
+		 <el-form label-position="right" label-width="80px" :model="categoriesForm">
 		  <el-form-item label="栏目名称">
 		    <el-input v-model="categoriesForm.name"></el-input>
 		  </el-form-item>
@@ -69,58 +71,95 @@
 	</div>
 </template>
 <script type="text/javascript">
-import {mapActions,mapGetters,mapMutations} from 'vuex';
+import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 	export default {
 		data(){
 			return {
 				multipleSelection:[],
 				dialogVisible: false,
 				categoriesForm:{parentId:''},
-				title:''
+				title:'',
+				editableTabsValue: '1',
+        tabIndex: 1
 			}
 		},
-
 		 computed: {
-    		...mapGetters('Lanmu',['categories'])
+				...mapGetters('Lanmu',['categories']),
+				...mapState('Lanmu',['children'])
   		},
 		created(){
 			this.loadCategories()
 		},
   		methods:{
-  			 ...mapActions('Lanmu',['loadCategories','saveCategories','deleteLm','deleteAllLm']),
-  			 // 批量删除
-  			 deleteAll(){
-				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+				...mapActions('Lanmu',['loadCategories','saveCategories','deleteLm','deleteAllLm','findCategoryByParentId']),
+				// 1.标签页增加删除方法
+				handleTabsEdit(targetName, action) {
+					if (action === 'add') {
+						this.dialogVisible = true
+						this.title = '新增栏目'
+						this.categoriesForm = {}
+					}
+					if (action === 'remove') {
+						this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
 		          type: 'warning'
-		        })
-		        .then(()=>{
-		        	let ids=this.multipleSelection.map((item)=>{
-					return item.id
-				})
-				this.deleteAllLm({ids})
-				.then(()=>{
-					this.$notify.success({
-			          title: '成功',
-			          message: '删除成功！'
-			        });
-			          this.loadCategories();
-				})
-				.catch(()=>{
-					this.$notify.error({
-			          title: '错误',
-			          message: '删除失败！'
-			        });
-				})
-			})
-		        .catch(()=>{
-		        	this.$message({
-		            type: 'info',
-		            message: '已取消删除'
-		          });   
-		        })	
-  			 },
+		        }).then(() => {
+							this.deleteLm(targetName).then((response) => {
+								const status = response.data.status
+								if (status === '200'){
+									this.$notify.success({
+										title: '成功',
+										message: '删除成功！'
+									});
+								} else {
+									this.$notify.error({
+										title: '错误',
+										message: '不允许删除！'
+									});
+								}
+							})
+						})
+					}
+				},
+				// 2.标签页改变函数
+				handlerRelod2_categories(el){
+					localStorage.setItem('parentId',el.$attrs.value)
+					this.findCategoryByParentId(el.$attrs.value)
+				},
+  		// 	// 批量删除
+  		// 	deleteAll(){
+			// 	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+		  //         confirmButtonText: '确定',
+		  //         cancelButtonText: '取消',
+		  //         type: 'warning'
+		  //       })
+		  //       .then(()=>{
+		  //       	let ids=this.multipleSelection.map((item)=>{
+			// 		return item.id
+			// 	})
+			// 	this.deleteAllLm({ids})
+			// 	.then(()=>{
+			// 		this.$notify.success({
+			//           title: '成功',
+			//           message: '删除成功！'
+			//         });
+			//           this.loadCategories();
+			// 	})
+			// 	.catch(()=>{
+			// 		this.$notify.error({
+			//           title: '错误',
+			//           message: '删除失败！'
+			//         });
+			// 	})
+			// })
+		  //       .catch(()=>{
+		  //       	this.$message({
+		  //           type: 'info',
+		  //           message: '已取消删除'
+		  //         });   
+		  //       })	
+  		// 	 },
 
   			 // 删除栏目
   			 deleteLanmu(id){
@@ -134,8 +173,9 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 								this.$notify.success({
 						          title: '成功',
 						          message: '删除成功！'
-						        });
-						        this.loadCategories();
+										});
+										let id = localStorage.getItem('parentId')
+						        this.findCategoryByParentId(id)
 							})
 							.catch(()=>{
 								this.$notify.error({
@@ -149,13 +189,13 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 
   			 // 修改栏目信息
   			 updata(data){
-  			 	this.categoriesForm.name = data.name
-  			 	this.categoriesForm.comment = data.comment
-  			 	this.categoriesForm.parentId = data.parent.id
-  			 	this.categoriesForm.id = data.id
+  			 	// this.categoriesForm.name = data.name
+  			 	// this.categoriesForm.comment = data.comment
+  			 	// this.categoriesForm.parentId = data.parentId
+					// this.categoriesForm.id = data.id
+					this.categoriesForm = data 
   			 	this.dialogVisible = true
-				
-				this.title = '修改栏目'
+					this.title = '修改栏目'
   			 },
   			 // 点击新增按钮
   			 toAdd(){
@@ -167,7 +207,8 @@ import {mapActions,mapGetters,mapMutations} from 'vuex';
 			 save(){
 				this.dialogVisible = false
 				this.saveCategories(this.categoriesForm).then(r=>{
-					this.loadCategories()
+					let id = localStorage.getItem('parentId')
+					this.findCategoryByParentId(id)
 				})
 			 },
   			 // 多选框

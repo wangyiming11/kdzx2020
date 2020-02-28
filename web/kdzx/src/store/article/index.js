@@ -1,10 +1,11 @@
-import axios from '@/http/axios';
+import axios from '@/http/axios'
 export default {
   namespaced: true,
   state: {
     article: [],
     total: 10,
-    categories:[]
+    categories: [],
+    articleDetails: {}
   },
   mutations: {
     // 1.重置文章
@@ -18,6 +19,10 @@ export default {
     // 3.重置栏目信息
     changeCategories (state, categories) {
       state.categories = categories
+    },
+    // 4.重置文章详情
+    changeArticleDetails (state, articleDetails) {
+      state.articleDetails = articleDetails
     }
   },
   actions: {
@@ -32,7 +37,7 @@ export default {
     },
     // 2.保存或更新文章信息
     async saveOrUpDateArticle ({ dispatch }, article) {
-      let response = await axios.post('/manager/article/saveOrUpdateArticle', article)
+      const response = await axios.post('/manager/article/saveOrUpdateArticle', article)
       return response
     },
     // 3.通过ID删除文章
@@ -48,6 +53,17 @@ export default {
       axios.get('/manager/category/findAllCategory').then((res) => {
         context.commit('changeCategories', res.data.data)
       })
+    },
+    // 6.通过id查询文章详情
+    async findArticleById (content, id) {
+      const response = await axios.get('/manager/article/findArticleById?id=' + id)
+      content.commit('changeArticleDetails', response.data.data)
+      return response
+    },
+    // 7.通过ID审核文章，改变状态
+    async checkArticle (content, params) {
+      const response = await axios.get('/manager/article/checkArticle', { params })
+      return response
     }
   }
 }
