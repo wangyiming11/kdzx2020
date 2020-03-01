@@ -23,7 +23,8 @@ export default {
             commit('refreshCategories',response.data)
         },
          // 查找所有子栏目分类信息
-         async findAllChilds(commit,id) {
+         async findAllChilds({commit},id) {
+             console.log(id)
             let response = await get('/manager/category/findCategoryByParentId?id='+id)
             // console.log('子栏目',response)
             commit('refreshChilds',response.data)

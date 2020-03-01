@@ -52,32 +52,19 @@
 <script>
 import {mapState,mapActions} from 'vuex'
 export default {
-    data() {
-        return{
-            user:{
-                type:'customer',
-            },
-        }
-    },
     computed: {
         ...mapState('useredit',['users']),
         ...mapState("user",["info"])
     },
     created() {
-        this.findAllUsers({});
-        // 利用this.$this.query获取参数
-        this.username = this.$route.query.username,
-        this.password = this.$route.query.password
-        this.nickname = this.$route.query.nickname
-        this.email = this.$route.query.email
-        this.userface = this.$route.query.userface
+        this.findAllUsers()
     },
     methods: {
         ...mapActions('useredit',['findAllUsers','UpdateUser']),
 
         // 回到个人页面
         backListHandler(){
-            let users = {
+            let form = {
                 id:this.users.id,
                 username:this.users.username,
                 password:this.users.password,
@@ -85,9 +72,9 @@ export default {
                 email:this.users.email,
                 userface:this.users.userface,
             }
-            this.$router.push({path:'/manager/user'})
-            
-            this.SaveOrUpdateUser(users)
+            console.log("用户表单",form)
+            this.UpdateUser(form)
+            this.$router.push({path:'/login'})
         }
        
     }

@@ -13,6 +13,7 @@
             label="标题"
             placeholder="请输入文章标题"
             icon="question-o"
+            clear
             />
             <van-field
             v-model="form.liststyle"
@@ -21,6 +22,25 @@
             placeholder="请输入列表样式"
             icon="question-o"
             />
+            <van-field
+            readonly
+            clickable
+            label="栏目"
+            :value="form.categoryId"
+            placeholder="请选择栏目"
+            @click="showPicker = true"
+            />
+            <van-popup v-model="showPicker" position="bottom">
+                <van-picker
+                    valid-v-for="item in categories"
+                    show-toolbar
+                    :columns="item.name"
+                    @cancel="showPicker = false"
+                    @confirm="onConfirm"
+                    ：key="item.id"
+                />
+            </van-popup>
+<!-- {{categories}} -->
             <van-field
             v-model="form.music"
             clearable
@@ -57,34 +77,46 @@
 <script>
 import {mapState,mapActions} from 'vuex'
 export default {
+    computed: {
+    ...mapState('category',['categories']),
+    ...mapState("user",["info"])
+    },
     data() {
         return{
-            form:{ },
+            form:{
+                categoryId:'',
+             },
+            showPicker: false,
         }
     },
 
     created() {
-
+        this.findAllCategories()
     },
     methods: {
+        ...mapActions('category',['findAllCategories']),
         ...mapActions('article',['SaveOrUpdateArticle']),
         // 回到个人页面
-        backListHandler(){
-            this.$router.push({path:'/manager/user'})
-            console.log('表单数据' + this.form)
-            this.saveOrUpDateArticle(this.form)
-            .then((response) => {
-                let payload = {
-                    page:this.page,
-                    pageSize: this.pageSize,
-                    categoryId: this.categoryId
-                }
-                this.loadArticle(payload)
-                this.$message({type:"success",message:'操作成功'});
-            })
+        onConfirm(value) {
+            this.form.categoryId = value;
+            this.showPicker = false;
         },
-        
-        }
+        backListHandler(){
+            let form = {
+                username:this.form.username,
+                password:this.form.password,
+                nickname:this.form.nickname,
+                email:this.form.email,
+                userface:this.form.userface,
+                userId:this.info.id,
+                categoryId:this.form.categoryId,
+                content:this.form.content,
+            }
+            console.log("用户表单",form)
+            this.$router.push({path:'/manager/user'})
+            // this.SaveOrUpdateArticle(form)
+        },
+    }
        
 }
 </script>

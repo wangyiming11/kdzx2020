@@ -5,51 +5,53 @@
       看点资讯精选
     </div>
     <van-tabs color="#2E8FF4">
-      <van-tab 
-      v-for="item in categories" 
-      :title="item.name" 
-      :key="item.id"
-      @click="findChildHandler(item.id)">
-          <!-- <van-tabs>
-            <van-tab 
-            v-for="index in childs.length" 
-            :title="childs[index-1].name" 
-            :key="childs[index-1].name"
-            @click="findArticleHandler()">
-              <div class="list" style="margin-top:1em">
-                <van-card
-                  v-for="index in articles.length" 
-                  :title="articles[index-1].name" 
-                  :key="articles[index-1].id"
-                  :num="articles[index-1].readtime"
-                  :desc="articles[index-1].content"
-                  :thumb="articles[index-1].author.userface">
-                  <div slot="tags" >
-                    <van-tag plain type="default">{{articles[index-1].author.username}}</van-tag>
-                    <van-tag plain type="default">{{articles[index-1].author.regTime}}</van-tag>
-                  </div>
-                  <div slot="footer">
-                    <van-button size="mini" @click.proevent="ShowArticlesHandler(articles[index-1].id)">详情</van-button>
-                  </div>
-                </van-card>
-              </div> 
+      <van-tab v-for="item in categories" :key='item.id'>
+        <div class="tab-title" slot="title" @click="findChildHandler(item.id)">{{ item.name }}</div>
+          <van-tabs color="#2E8FF4">
+            <van-tab v-for="item in childs" :key='item.id'>
+                <div class="tab-title" slot="title" @click="findArticleHandler(item.id)">{{ item.name }}</div>
+                <div class="article"
+                v-for='item in articles' 
+                :key="item.id"
+                @click="ShowArticlesHandler(item.id)">
+                  <van-row span="14">
+                    <van-col span="8">
+                      <van-image
+                      round
+                      width="4rem"
+                      height="4rem"
+                      :src="item.author.userface"
+                      /></van-col>
+                     <van-col span="16">
+                      <van-row >{{item.author.username}}</van-row>
+                      <van-row >{{item.author.regTime}}</van-row>
+                    </van-col>
+                  </van-row>
+                  <van-row>{{item.content}}</van-row>
+                </div>
             </van-tab>
-          </van-tabs> -->
+          </van-tabs>
       </van-tab>
     </van-tabs>
 
     <!-- {{categories}} -->
     <!-- {{articles}} -->
+    <!-- {{childs}} -->
 
    
   </div>
 </template>
 <script>
 import {mapState, mapActions} from 'vuex'
-
+import {get,post} from '../../http/axios'
 export default {
+  data() {
+      return{
+          childs:[],
+      }
+  },
   computed:{
-    ...mapState('category',['categories'],['childs']),
+    ...mapState('category',['categories']),
     ...mapState('article',['articles']),
   },
   created(){
@@ -57,21 +59,25 @@ export default {
     this.QueryArticles();
   },
   methods:{
-    ...mapActions('category',['findAllCategories'],['findAllChilds']),
-    ...mapActions('article',['QueryArticles'],['readArticle']),
+    ...mapActions('category',['findAllCategories']),
+    ...mapActions('article',['QueryArticles']),
     // 页面跳转文章详情页面
-    ArticlesHandler(){
-      this.$router.push({path:'/manager/article',id})
+    ShowArticlesHandler(id){
+      console.log("文章id",id)
+      this.$router.push({path:'/manager/article',query:{id}})
     },
     //查询子栏目
-    findChildHandler(id){
-      console.log("id",id)
-      this.findAllChilds(id)
+    async findChildHandler(id){
+      console.log("父栏目id",id)
+      // this.findAllChilds({id})
+      let response = await get('/manager/category/findCategoryByParentId?id='+id)
+      this.childs=response.data
+       this.QueryArticles(id)
     },
     //分类查询文章
-    findArticleHandler(){
-      let id = this.childs[index-1].id
-      this.readArticle(id)
+    findArticleHandler(id){
+      console.log("子栏目id",id)
+      this.QueryArticles(id)
     }
   }
 }
@@ -85,5 +91,10 @@ export default {
   color: white;
   font-weight: bold;
   text-align: center;
+}
+.article{
+  line-height: 50px;
+  font-size: 17px;
+  border:1px solid #ededed;
 }
 </style>
