@@ -4,6 +4,7 @@ export default {
     state: {
         articles:[],
         details:[],
+        childs:[]
     },
     mutations :{
         refreshDetails(state,details){
@@ -11,12 +12,20 @@ export default {
         },
         refreshArticles(state,articles){
             state.articles = articles
+        },
+        refreshChildCate(state,childs){
+            state.childs = childs
         }
     },
     actions :{
+        async findChild({commit},id){
+            // this.findAllChilds({id})
+            let response = await get('/manager/category/findCategoryByParentId?id='+id)
+            commit('refreshChildCate',response.data)
+        },
         // 查找所有文章信息
         async QueryArticles({commit},id) {
-            let response = await get('/index/findArticleByCategoryId?id='+id)
+            let response = await get('/index/findArticleByCategoryId?categoryId='+id)
             // console.log('response',response)
             commit('refreshArticles',response.data)
 

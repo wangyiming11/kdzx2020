@@ -8,6 +8,7 @@
       <van-tab v-for="item in categories" :key='item.id'>
         <div class="tab-title" slot="title" @click="findChildHandler(item.id)">{{ item.name }}</div>
           <van-tabs color="#2E8FF4">
+            {{childs}}
             <van-tab v-for="item in childs" :key='item.id'>
                 <div class="tab-title" slot="title" @click="findArticleHandler(item.id)">{{ item.name }}</div>
                 <div class="article"
@@ -47,32 +48,33 @@ import {get,post} from '../../http/axios'
 export default {
   data() {
       return{
-          childs:[],
+      
       }
   },
   computed:{
     ...mapState('category',['categories']),
-    ...mapState('article',['articles']),
+    ...mapState('article',['articles','childs']),
   },
   created(){
     this.findAllCategories();
-    this.QueryArticles();
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.findChildHandler(this.categories[0].id)
+    },500)
   },
   methods:{
     ...mapActions('category',['findAllCategories']),
-    ...mapActions('article',['QueryArticles']),
+    ...mapActions('article',['QueryArticles','findChild']),
     // 页面跳转文章详情页面
     ShowArticlesHandler(id){
       console.log("文章id",id)
       this.$router.push({path:'/manager/article',query:{id}})
     },
+    
     //查询子栏目
-    async findChildHandler(id){
-      console.log("父栏目id",id)
-      // this.findAllChilds({id})
-      let response = await get('/manager/category/findCategoryByParentId?id='+id)
-      this.childs=response.data
-       this.QueryArticles(id)
+    findChildHandler(id){
+      this.findChild(id)
     },
     //分类查询文章
     findArticleHandler(id){

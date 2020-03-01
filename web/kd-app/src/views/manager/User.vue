@@ -8,8 +8,9 @@
     <!-- 头像信息 -->
     <div class="header">
       <div class="photo">
-        <van-uploader :before-read="beforeRead"  >
-          <img src="../../assets/tx.jpeg" alt=""/>
+        <van-uploader max-count="2" :after-read="afterRead">
+          <img v-if="imgUrl" :src="imgUrl"/>
+          <img v-else src="../../assets/tx.jpeg" alt=""/>
         </van-uploader>
       </div>
       <div class="name">您好，{{info.name}}</div>
@@ -53,36 +54,29 @@
 
 import {mapState, mapActions} from 'vuex'
 import Vue from 'vue';
+import axios from 'axios'
 import { Overlay } from 'vant';
 Vue.use(Overlay);
 
 export default {
   data() {
     return {
-      show: false
+      show: false,
+      imgUrl:''
     }
   },
   methods:{
     ...mapActions('user',['logout']),
-    // 返回布尔值
-    beforeRead(file) {
-      if (file.type !== 'image/jpeg') {
-        Toast('请上传 jpg 格式图片');
-        return false;
-      }
-      return true;
+    afterRead(file) {
+        //构造一个 FormData，把后台需要发送的参数添加
+        this.formData = new FormData(); 
+        //接口需要传的参数
+        this.formData.append('file',file.file)
+        axios.post('http://47.106.244.1:8099/manager/file/upload', this.formData).then(res => {
+           this.imgUrl = 'http://134.175.154.93:8888/group1/' + res.data.id
+    　　　　console.log(res.data)  　　　　
+    　　});
     },
-    asyncBeforeRead(file) {
-      return new Promise((resolve, reject) => {
-        if (file.type !== 'image/jpeg') {
-          Toast('请上传 jpg 格式图片');
-          reject();
-        } else {
-          resolve();
-        }
-      });
-    },
-    // 关闭联系我们模态框
     closeModal(){
       this.show = false
     },

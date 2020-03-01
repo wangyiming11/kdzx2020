@@ -31,16 +31,8 @@
             @click="showPicker = true"
             />
             <van-popup v-model="showPicker" position="bottom">
-                <van-picker
-                    valid-v-for="item in categories"
-                    show-toolbar
-                    :columns="item.name"
-                    @cancel="showPicker = false"
-                    @confirm="onConfirm"
-                    ：key="item.id"
-                />
+                <van-picker show-toolbar :columns="columns" @cancel="onCancel" @confirm="onConfirm" />
             </van-popup>
-<!-- {{categories}} -->
             <van-field
             v-model="form.music"
             clearable
@@ -84,18 +76,30 @@ export default {
     data() {
         return{
             form:{
-                categoryId:'',
+                categoryId:''
+                
              },
+             columns:[],
             showPicker: false,
         }
     },
-
+    mounted(){
+        this.categories.forEach((item)=>{
+            this.columns.push(item.id)
+        })
+    },
     created() {
         this.findAllCategories()
     },
     methods: {
         ...mapActions('category',['findAllCategories']),
         ...mapActions('article',['SaveOrUpdateArticle']),
+        onConfirm(value, index) {
+            Toast(`当前值：${value}, 当前索引：${index}`);
+        },
+        onCancel() {
+            Toast('取消');
+        },
         // 回到个人页面
         onConfirm(value) {
             this.form.categoryId = value;
