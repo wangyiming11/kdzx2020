@@ -4,9 +4,11 @@ import getters from './getters'
 import app from './modules/app'
 import settings from './modules/settings'
 import user from './modules/user'
-import Users from './users'
+import Users from './users/index'
 import Article from './article/index'
 import Lanmu from './lanmu/index'
+import Comment from './comment/index'
+
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -16,7 +18,8 @@ const store = new Vuex.Store({
     user,
     Users,
     Article,
-    Lanmu
+    Lanmu,
+    Comment
   },
   getters
 })

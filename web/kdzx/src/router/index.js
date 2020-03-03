@@ -1,11 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
-Vue.use(Router)
-
 /* Layout */
 import Layout from '@/layout'
-
+Vue.use(Router)
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -54,8 +51,6 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
-
-
   {
     path: '/customer',
     component: Layout,
@@ -68,8 +63,6 @@ export const constantRoutes = [
       }
     ]
   },
-
-
   {
     path: '/employee',
     component: Layout,
@@ -78,11 +71,10 @@ export const constantRoutes = [
         path: 'list',
         name: 'employee',
         component: () => import('@/pages/article/List'),
-        meta: { title: '资讯管理', icon: 'eye' }
+        meta: { title: '文章管理', icon: 'form' }
       }
     ]
   },
-
   {
     path: '/category',
     component: Layout,
@@ -95,7 +87,18 @@ export const constantRoutes = [
       }
     ]
   },
-  
+  {
+    path: '/comment',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'comment',
+        component: () => import('@/pages/comment/List'),
+        meta: { title: '评论管理', icon: 'example' }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
@@ -109,7 +112,7 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
+export function resetRouter () {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }

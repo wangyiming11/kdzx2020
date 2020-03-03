@@ -11,23 +11,20 @@
 				>
 					<!-- 表格开始 -->
 					<div class="lanmu_content">
-						<el-table :data="children" style="width: 100%" size='small' :border='true'
-						@selection-change="handleSelectionChange">
-							<el-table-column
-								type="selection"
-								width="100" align='center'>
-							</el-table-column>
+						<el-table :data="children" style="width: 100%" size='small' :border='true'>
 							<el-table-column
 								prop="id"
 								label="编号"
+								width="100"
 								align='center'>
 							</el-table-column>
 							<el-table-column
 								prop="name"
 								label="栏目名称"
+								width="300"
 								align='center'>
 							</el-table-column>
-							<el-table-column prop="comment" label="描述" align='center' width="300">
+							<el-table-column prop="comment" label="描述" align='center'>
 							</el-table-column>
 							<el-table-column width="150" label="操作" align='center'>
 								<template slot-scope='{row}'>
@@ -48,16 +45,16 @@
 		  width="30%"
 		  >
 		  <!-- 表单开始 -->
-		 <el-form label-position="right" label-width="80px" :model="categoriesForm">
+		 	<el-form label-position="right" label-width="80px" :model="categoriesForm">
 		  <el-form-item label="栏目名称">
 		    <el-input v-model="categoriesForm.name"></el-input>
 		  </el-form-item>
-		 <el-form-item label="父栏目">
+		 	<el-form-item label="父栏目">
 		    <el-select v-model="categoriesForm.parentId" placeholder="请选择父栏目">
 		       <el-option :key='c.id' v-for='c in categories' :label="c.name" :value="c.id"></el-option>
 		    </el-select>
 		  </el-form-item>
-		 <el-form-item label="描述">
+		 	<el-form-item label="描述">
 		    <el-input type="textarea" v-model="categoriesForm.comment"></el-input>
 		  </el-form-item>
 		</el-form>
@@ -79,8 +76,7 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 				dialogVisible: false,
 				categoriesForm:{parentId:''},
 				title:'',
-				editableTabsValue: '1',
-        tabIndex: 1
+				editableTabsValue: 1,
 			}
 		},
 		 computed: {
@@ -100,14 +96,15 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 						this.categoriesForm = {}
 					}
 					if (action === 'remove') {
-						this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+						this.$confirm('此操作将永久删除该栏目, 是否继续?', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
 		          type: 'warning'
 		        }).then(() => {
 							this.deleteLm(targetName).then((response) => {
 								const status = response.data.status
-								if (status === '200'){
+								if (status === 200){
+									this.loadCategories()
 									this.$notify.success({
 										title: '成功',
 										message: '删除成功！'
@@ -186,13 +183,8 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 		        })
 				
   			 },
-
   			 // 修改栏目信息
   			 updata(data){
-  			 	// this.categoriesForm.name = data.name
-  			 	// this.categoriesForm.comment = data.comment
-  			 	// this.categoriesForm.parentId = data.parentId
-					// this.categoriesForm.id = data.id
 					this.categoriesForm = data 
   			 	this.dialogVisible = true
 					this.title = '修改栏目'
@@ -210,12 +202,8 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 					let id = localStorage.getItem('parentId')
 					this.findCategoryByParentId(id)
 				})
-			 },
-  			 // 多选框
-  			 handleSelectionChange(val){
-				this.multipleSelection = val;
-			}
-  		
+				this.loadCategories()
+			 }
   		}
 	}
 </script>

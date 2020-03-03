@@ -5,7 +5,8 @@ export default {
     article: [],
     total: 10,
     categories: [],
-    articleDetails: {}
+    articleDetails: {},
+    editor: []
   },
   mutations: {
     // 1.重置文章
@@ -23,6 +24,10 @@ export default {
     // 4.重置文章详情
     changeArticleDetails (state, articleDetails) {
       state.articleDetails = articleDetails
+    },
+    // 5.重置所有编辑信息
+    resetEditor (state, editor) {
+      state.editor = editor
     }
   },
   actions: {
@@ -55,15 +60,20 @@ export default {
       })
     },
     // 6.通过id查询文章详情
-    async findArticleById (content, id) {
+    async findArticleById (context, id) {
       const response = await axios.get('/manager/article/findArticleById?id=' + id)
-      content.commit('changeArticleDetails', response.data.data)
+      context.commit('changeArticleDetails', response.data.data)
       return response
     },
     // 7.通过ID审核文章，改变状态
-    async checkArticle (content, params) {
+    async checkArticle (context, params) {
       const response = await axios.get('/manager/article/checkArticle', { params })
       return response
+    },
+    // 8.查询所有编辑信息
+    async findAllEditor (context) {
+      const response = await axios.get('/manager/user/findAllUser')
+      context.commit('resetEditor', response.data.data)
     }
   }
 }

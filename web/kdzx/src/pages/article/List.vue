@@ -3,8 +3,8 @@
 		<div class="article_top">
 			<el-row :gutter="0">
 				<el-col :span='7'>
-					<el-button type="success" size='small' @click='toAddHandler'>新增</el-button>
-					<el-button type="success" size='small' @click='batchDelect'>批量删除</el-button>
+					<el-button type="primary" size='small' @click='toAddHandler'>新增</el-button>
+					<el-button type="primary" size='small' @click='batchDelect'>批量删除</el-button>
 				</el-col>
 				<el-col :span='9'>
 					<template>
@@ -56,7 +56,6 @@
 	      <el-table-column
 	        prop="title"
 	        label="文章标题"
-	        width="200"
 					align='center'>
 	      </el-table-column>
 	      <el-table-column
@@ -80,7 +79,7 @@
 	      <el-table-column
 	        prop="readtimes"
 	        label="阅读次数"
-	        width="150"
+	        width="100"
 					align='center'>
 	      </el-table-column>
 	      <el-table-column
@@ -97,7 +96,7 @@
 						<el-button type="primary" size="mini" @click="toArticleDetailsHandler(row.id)">查看</el-button>
 					</template>
 	      </el-table-column>
-	      <el-table-column label="操作" align='center'>
+	      <el-table-column label="操作" width="100" align='center'>
 	      	<template slot-scope='{row}'>
 	      		<i class="fa fa-trash" @click='deleteHandler(row.id)'></i>&emsp;
 	      		<i class="fa fa-pencil" @click='toEditHandler(row)'></i>
@@ -120,6 +119,11 @@
 			<el-form-item label="所属栏目">
 				<el-select v-model="articleForm.categoryId" placeholder="请选择所属栏目">
 					<el-option :key='c.id' v-for='c in categories' :label="c.name" :value="c.id"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="文章作者">
+				<el-select v-model="articleForm.userId" placeholder="请选择文章作者">
+					<el-option :key='c.id' v-for='c in editor' :label="c.nickname" :value="c.id"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="列表样式" >
@@ -193,6 +197,16 @@
 							</el-form-item>
 						</el-col>
 					</el-row>
+					<el-row>
+						<el-form-item label="评论状态：">
+							<el-switch
+								v-model="commentStatus"
+								active-color="#1296db"
+								inactive-color="#cdcdcd"
+								@change='changeCommentStatus(articleDetails)'>
+							</el-switch>
+						</el-form-item>
+					</el-row>
 					<el-form-item label="文章正文：">
 						<span>{{articleDetails.content}}</span>
 					</el-form-item>
@@ -235,6 +249,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				keywords:{
 					words:''
 				},
+				commentStatus: true
 			}
 		},
 			created() {
@@ -245,12 +260,13 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				}
 				this.loadArticle(payload)
 				this.loadCategories()
+				this.findAllEditor()
 			},
 		  computed: {
-				...mapState('Article',['article','total','categories','articleDetails']),
+				...mapState('Article',['article','total','categories','articleDetails','editor']),
 			},
 			methods: {
-				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle','loadCategories','findArticleById','checkArticle']),
+				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle','loadCategories','findArticleById','checkArticle','findAllEditor']),
 				// 1.分页page处理
 				handleCurrentChange (page) {
 					this.page = page -1
@@ -392,28 +408,38 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				auditHandler(id) {
 					const params = {
 						id:id,
-						status:'已审核'
+						status:'审核通过'
 					}
 					this.checkArticle(params)
-					.then(() => {
-						this.findArticleById(id)
-						let payload = {
-							page:this.page,
-							pageSize: this.pageSize,
-							categoryId: this.categoryId
+					.then((response) => {
+						const status = response.data.status
+						if(status === 200){
+							this.findArticleById(id)
+							let payload = {
+								page:this.page,
+								pageSize: this.pageSize,
+								categoryId: this.categoryId
+							}
+							this.loadArticle(payload)
+							this.$notify.success({
+								title: '成功',
+								message: '审核成功！'
+							});
+						} else {
+							this.$notify.error({
+								title: '错误',
+								message: '重复审核！'
+							});
 						}
-						this.loadArticle(payload)
-						this.$notify.success({
-							title: '成功',
-							message: '审核成功！'
-						});
+						
 					})
-					.catch(() => {
-						this.$notify.error({
-							title: '错误',
-							message: '重复审核！'
-						});
-					})
+				},
+				// 11.文章评论区状态改变
+				changeCommentStatus(articleDetails) {
+					const plyload = {
+						id:articleDetails.id,
+						status:this.commentStatus
+					}
 				}
 			},
 			// 监听categoryId的变化，做数据重载
@@ -446,7 +472,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				},
 				keywords:{
 					function(now,old) {
-						console.log('old'+old)
+						console.log('old'+old)	
 						console.log('now'+now)
 						const beginTime = this.time[0]
 						const endTime = this.time[1]
@@ -467,7 +493,6 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 <style type="text/css">
 	.article{
 		padding: 0.5em;
-		
 	}
 	.article_top{
 		margin-bottom: 1em;
