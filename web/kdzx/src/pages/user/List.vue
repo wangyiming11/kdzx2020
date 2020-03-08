@@ -285,7 +285,7 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
   		}
 	}
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
 	.user{
 		padding: 0.5em;
 	}

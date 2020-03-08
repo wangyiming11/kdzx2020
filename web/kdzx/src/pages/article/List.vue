@@ -150,40 +150,40 @@
 							<span>{{articleDetails.title}}</span>
 						</el-form-item>
 					</el-row>
-					<el-row :gutter="20">
-						<el-col :span="6">
+					<el-row>
+						<el-col :span="8">
 							<el-form-item label="文章作者：">
-								<!-- <span>{{articleDetails.author.nickname}}</span> -->
+								<span v-if="articleDetails.author">{{articleDetails.author.nickname}}</span>
 							</el-form-item>
 						</el-col>
 						<el-col :span="6">
 							<el-form-item label="所属栏目：">
-								<!-- <span>{{articleDetails.category.name}}</span> -->
+								<span v-if="articleDetails.category">{{articleDetails.category.name}}</span>
 							</el-form-item>
 						</el-col>
-						<el-col :span="6">
+						<el-col :span="5">
 							<el-form-item label="阅读次数：">
 								<span>{{articleDetails.readtimes}}</span>
 							</el-form-item>
 						</el-col>
-						<el-col :span="6">
+						<el-col :span="5">
 							<el-form-item label="状态：">
 								<span>{{articleDetails.status}}</span>
 							</el-form-item>
 						</el-col>
 					</el-row>
-					<el-row :gutter="20">
-						<el-col :span="12">
+					<el-row>
+						<el-col :span="14">
 							<el-form-item label="发布时间：">
 								<span>{{articleDetails.publishtime}}</span>
 							</el-form-item>
 						</el-col>
-						<el-col :span="6">
+						<el-col :span="5">
 							<el-form-item label="点赞次数：">
 								<span>{{articleDetails.thumbup}}</span>
 							</el-form-item>
 						</el-col>
-						<el-col :span="6">
+						<el-col :span="5">
 							<el-form-item label="被踩次数：">
 								<span>{{articleDetails.thumbdown}}</span>
 							</el-form-item>
