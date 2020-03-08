@@ -8,34 +8,41 @@
 						<el-row :gutter="12">
 							<el-col :span="6" v-for='item in admins' :key='item.id'>
 								<el-card shadow="hover">
-										<div class="image">
-											<img :src="item.userface">
+									<div class="image">
+										<img :src="item.userface">
+									</div>
+									<div class="info">
+										<div>
+											<span>用&nbsp;户&nbsp;&nbsp;名:</span>
+											<span>{{item.username}}</span>
 										</div>
-										<div class="info">
-											<div>
-												<span>用&nbsp;户&nbsp;&nbsp;名:</span>
-												<span>{{item.username}}</span>
-											</div>
-											<div>
-												<span>真实姓名:</span>
-												<span>{{item.nickname}}</span>
-											</div>
-											<div>
-												<span>邮&emsp;&emsp;箱:</span>
-												<span>{{item.email}}</span>
-											</div>
-											<div>
-												<span>状&emsp;&emsp;态:</span>
-												<span>
-													<el-switch
-												v-model="item.enabled"
-												active-color="#13ce66"
-												inactive-color="#ff4949"
-												@change='changeStatus(item)'>
-											</el-switch>
-												</span>
-											</div>
+										<div>
+											<span>真实姓名:</span>
+											<span>{{item.nickname}}</span>
 										</div>
+										<div>
+											<span>邮&emsp;&emsp;箱:</span>
+											<span>{{item.email}}</span>
+										</div>
+										<div>
+											<span>状&emsp;&emsp;态:</span>
+											<span>
+												<el-switch
+													v-model="item.enabled"
+													active-color="#13ce66"
+													inactive-color="#ff4949"
+													@change='changeStatus(item)'>
+												</el-switch>
+											</span>
+										</div>
+										<div>
+											<span>操&emsp;&emsp;作:</span>
+											<span style="margin-top: -11px">
+												<el-button type="text" icon="el-icon-delete" @click='deleteHandler(item.id)'></el-button>
+												<el-button type="text" icon="el-icon-edit" @click='editHandler(item)'></el-button>
+											</span>
+										</div>
+									</div>
 								</el-card>
 							</el-col>
 						</el-row>
@@ -64,11 +71,18 @@
 												<span>状&emsp;&emsp;态:</span>
 												<span>
 													<el-switch
-												v-model="item.enabled"
-												active-color="#13ce66"
-												inactive-color="#ff4949"
-												@change='changeStatus(item)'>
-											</el-switch>
+														v-model="item.enabled"
+														active-color="#13ce66"
+														inactive-color="#ff4949"
+														@change='changeStatus(item)'>
+													</el-switch>
+												</span>
+											</div>
+											<div>
+											<span>操&emsp;&emsp;作:</span>
+												<span style="margin-top: -11px">
+													<el-button type="text" icon="el-icon-delete" @click='deleteHandler(item.id)'></el-button>
+													<el-button type="text" icon="el-icon-edit" @click='editHandler(item)'></el-button>
 												</span>
 											</div>
 										</div>
@@ -80,34 +94,34 @@
 						<el-row :gutter="12">
 							<el-col :span="6" v-for='item in users' :key='item.id'>
 								<el-card shadow="hover">
-										<div class="image">
-											<img :src="item.userface">
+									<div class="image">
+										<img :src="item.userface">
+									</div>
+									<div class="info">
+										<div>
+											<span>用&nbsp;户&nbsp;&nbsp;名:</span>
+											<span>{{item.username}}</span>
 										</div>
-										<div class="info">
-											<div>
-												<span>用&nbsp;户&nbsp;&nbsp;名:</span>
-												<span>{{item.username}}</span>
-											</div>
-											<div>
-												<span>真实姓名:</span>
-												<span>{{item.nickname}}</span>
-											</div>
-											<div>
-												<span>邮&emsp;&emsp;箱:</span>
-												<span>{{item.email}}</span>
-											</div>
-											<div>
-												<span>状&emsp;&emsp;态:</span>
-												<span>
-													<el-switch
-												v-model="item.enabled"
-												active-color="#13ce66"
-												inactive-color="#ff4949"
-												@change='changeStatus(item)'>
-											</el-switch>
-												</span>
-											</div>
+										<div>
+											<span>真实姓名:</span>
+											<span>{{item.nickname}}</span>
 										</div>
+										<div>
+											<span>邮&emsp;&emsp;箱:</span>
+											<span>{{item.email}}</span>
+										</div>
+										<div>
+											<span>状&emsp;&emsp;态:</span>
+											<span>
+												<el-switch
+											v-model="item.enabled"
+											active-color="#13ce66"
+											inactive-color="#ff4949"
+											@change='changeStatus(item)'>
+										</el-switch>
+											</span>
+										</div>
+									</div>
 								</el-card>
 							</el-col>
 						</el-row>
@@ -126,9 +140,9 @@
 		  <el-form-item label="用 户 名">
 		    <el-input v-model="userForm.username"></el-input>
 		  </el-form-item>
-		  <el-form-item label="密 码">
+		  <!-- <el-form-item label="密 码">
 		    <el-input v-model="userForm.password"></el-input>
-		  </el-form-item>
+		  </el-form-item> -->
 		   <el-form-item label="真实姓名">
 		    <el-input v-model="userForm.nickname"></el-input>
 		  </el-form-item>
@@ -182,36 +196,91 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 			this.loadUsers()
   		},
   		methods:{
-  			...mapActions('Users',['loadUsers','changeUserStatus','saveUser']),
-  			// 新增用户
+  			...mapActions('Users',['loadUsers','changeUserStatus','saveUser','deleteUserById']),
+  			// 1.新增用户
   			adduser(){
-				this.dialogVisible = true
-				this.userForm = {}
+					this.dialogVisible = true
+					this.userForm = {}
   			},
-  			// 保存用户
+  			// 2.保存用户
   			savaUser(){
   				this.dialogVisible = false
-  				this.userForm.enabled = false
+					this.userForm.enabled = true
+					this.userForm.password = '123321'
   				this.userForm.userface = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581326895641&di=dda42443eb3e835a91f0398f00b65909&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F35%2F34%2F19300001295750130986345801104.jpg'
-					this.saveUser(this.userForm).then((r)=>{
-					this.loadUsers()
+					this.saveUser(this.userForm).then((response)=>{
+						const status = response.data.status
+						if(status === 200){
+							this.loadUsers()
+							this.$notify.success({
+								title: '成功',
+								message: '操作成功！'
+							});
+						} else {
+							this.$notify.error({
+								title: '错误',
+								message: '操作失败！'
+							});
+						}
 				})
   				
   			},
-  			// 改变用户的状态
+  			// 3.改变用户的状态
   			changeStatus(item){
-  				// console.log(item.enabled)
   				var obj={
   					id:item.id,
   					status:item.enabled
   				}
-				this.changeUserStatus(obj).then(r=>{
-					this.loadUsers()
+				this.changeUserStatus(obj).then((response) => {
+					const status = response.data.status
+					if(status === 200){
+						this.loadUsers()
+						this.$notify.success({
+							title: '成功',
+							message: '操作成功！'
+						});
+					} else {
+						this.$notify.error({
+							title: '错误',
+							message: '操作失败！'
+						});
+					}
 				})
 				},
-				// 1.标签页改变
+				// 4.标签页改变
 				handleClick(tab, event) {
 					// console.log(tab, event);
+				},
+				// 5.去删除
+				deleteHandler(id) {
+					this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          type: 'warning'
+		        }).then(() => {
+							this.deleteUserById(id)
+							.then((response) => {
+								const status = response.data.status
+								if(status === 200){
+									this.loadUsers()
+									this.$notify.success({
+										title: '成功',
+										message: '删除成功！'
+									});
+								} else {
+									this.$notify.error({
+										title: '错误',
+										message: '删除失败！'
+									});
+								}
+							})
+						})
+				},
+				// 6.去修改
+				editHandler(item) {
+					delete item.regtime
+					this.userForm = item
+					this.dialogVisible = true
 				}
   		}
 	}
@@ -264,9 +333,11 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 		top:-15px;
 	}
 	.content {
-		margin-top: -15px
+		margin-top: 10px
 	}
 	#button {
-		margin-left: 1220px;
+		position: fixed;
+		right: 30px;
+		z-index: 10px;
 	}
 </style>

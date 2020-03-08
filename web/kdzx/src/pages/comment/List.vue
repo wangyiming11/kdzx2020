@@ -2,10 +2,11 @@
   <div class="comment">
     <div class="comment_content">
       <!-- 表格开始 -->
-			<el-table :data="comments" style="width: 100%" size='small' :border='true'>
+			<el-table :data="comments" style="width: 100%" size='small'>
 		    <el-table-column
-	        prop="id"
-	        label="编号"
+	        label="序号"
+					type="index" 
+					:index="1"
 	        width="50"
 					align='center'>
 	      </el-table-column>
@@ -18,13 +19,13 @@
 	      <el-table-column
 	        prop="content"
 	        label="评论内容"
-	        width="400"
+	        width="300"
 					align='center'>
 	      </el-table-column>
 				<el-table-column
-	        prop="customerId"
+	        prop="customer.nickname"
 	        label="评论者"
-	        width="150"
+	        width="100"
 					align='center'>
 	      </el-table-column>
 	      <el-table-column
@@ -99,30 +100,37 @@ export default {
 		},
 		// 2.审核事件
 		auditHandler(id) {
-			const payload = {
-				id:id,
-				status:'审核通过'
-			}
-			this.auditComment(payload)
-			.then((response)=>{
-				const status = response.data.status
-				console.log(status)
-				if(status === 200){
-					this.$notify.success({
-						title: '成功',
-						message: '审核成功！'
-					});
-					const payload = {
-						page:this.page,
-						pageSize: this.pageSize,
-					}
-					this.loadComments(payload)
-				} else {
-						this.$notify.error({
-							title: '错误',
-							message: '重复审核！'
+			this.$confirm('此操作将使该文章通过审核, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			})
+			.then(() => {
+				const payload = {
+					id:id,
+					status:'审核通过'
+				}
+				this.auditComment(payload)
+				.then((response)=>{
+					const status = response.data.status
+					console.log(status)
+					if(status === 200){
+						this.$notify.success({
+							title: '成功',
+							message: '审核成功！'
 						});
-					}
+						const payload = {
+							page:this.page,
+							pageSize: this.pageSize,
+						}
+						this.loadComments(payload)
+					} else {
+							this.$notify.error({
+								title: '错误',
+								message: '重复审核！'
+							});
+						}
+				})
 			})
 		},
 		// 3.根据ID删除评论

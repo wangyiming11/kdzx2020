@@ -2,14 +2,15 @@
 	<div class="article">
 		<div class="article_top">
 			<el-row :gutter="0">
-				<el-col :span='7'>
+				<el-col :span='5'>
 					<el-button type="primary" size='small' @click='toAddHandler'>新增</el-button>
 					<el-button type="primary" size='small' @click='batchDelect'>批量删除</el-button>
 				</el-col>
-				<el-col :span='9'>
-					<template>
+				<el-col :span="3">
+					<el-button size="medium" class="reset" :offset="2" @click="resetData">重置</el-button>
+				</el-col>
+				<el-col :span='8'>
 						<div class="block" offset="10">
-							<el-button size="medium" class="reset" @click="resetData">重置</el-button>
 							<el-date-picker
 								unlink-panels
 								v-model="time"
@@ -21,13 +22,12 @@
       					value-format="yyyy-MM-dd">
 							</el-date-picker>
 						</div>
-					</template>
 				</el-col>
 				<el-col :span='4'>
-					<el-input v-model="keywords.words" placeholder='请输入标题关键字'></el-input>
+					<el-input v-model="keywords" placeholder='请输入标题关键字'></el-input>
 				</el-col>	
 				<el-col :span='4'>
-					<el-select v-model="categoryId" placeholder="请选择栏目" class='select'>
+					<el-select v-model="categoryId" placeholder="请选择栏目" clearable class='select'>
 						<el-option
 							v-for="item in categories"
 							:key="item.id"
@@ -40,19 +40,13 @@
 		</div>
 		<div class="article_content">
 			<!-- 表格开始 -->
-			<el-table :data="article" style="width: 100%" size='small' :border='true'
+			<el-table :data="article" style="width: 100%" size='small'
 			@selection-change="selectionChangeHandler">
 	     	<el-table-column
 		      type="selection"
 		      width="50" 
 					align='center'>
 		    </el-table-column>
-		    <el-table-column
-	        prop="id"
-	        label="编号"
-	        width="50"
-					align='center'>
-	      </el-table-column>
 	      <el-table-column
 	        prop="title"
 	        label="文章标题"
@@ -110,7 +104,6 @@
 				:visible.sync="dialogVisible"
 				width="85%"
 				>
-				<!-- {{articleForm}} -->
 				<!-- 表单开始 -->
 			<el-form label-position="right" label-width="80px" :model="articleForm">
 				<el-form-item label="文章标题">
@@ -123,10 +116,10 @@
 			</el-form-item>
 			<el-form-item label="文章作者">
 				<el-select v-model="articleForm.userId" placeholder="请选择文章作者">
-					<el-option :key='c.id' v-for='c in editor' :label="c.nickname" :value="c.id"></el-option>
+					<el-option :key='c.id' v-for='c in editors' :label="c.nickname" :value="c.id"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="列表样式" >
+			<!-- <el-form-item label="列表样式" >
 				<ul class="list_style">
 					<li class="style_one" :class="{current:articleForm.liststyle=='style-one'}" @click="articleForm.liststyle = 'style-one'">
 						<img src="@/assets/form_images/1.jpg" alt="图片丢了">
@@ -135,9 +128,8 @@
 						<img src="@/assets/form_images/2.jpg" alt="图片丢了">
 					</li>
 				</ul>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="正文">
-				<!-- <el-input type="textarea" v-model="articleForm.content"></el-input> -->
 				<!-- 富文本编辑器 -->
 		    <mavon-editor ref="articleContent" v-model="articleForm.content"/>
 			</el-form-item>
@@ -145,7 +137,7 @@
 				<!-- 表单结束 -->
 				<span slot="footer" class="dialog-footer">
 					<el-button size='small' @click="dialogVisible = false">取 消</el-button>
-					<el-button size='small' type="success" @click="toSaveHandler">确 定</el-button>
+					<el-button size='small' type="primary" @click="toSaveHandler">确 定</el-button>
 				</span>
 			</el-dialog>
 			<!-- 模态框结束 -->
@@ -243,12 +235,10 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				detailsVisible: false ,
 				title:'',
 				articleForm:{
-					liststyle:'style-one'
+					liststyle:'true'
 				},
 				time:[],
-				keywords:{
-					words:''
-				},
+				keywords:'',
 				commentStatus: true
 			}
 		},
@@ -263,20 +253,24 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				this.findAllEditor()
 			},
 		  computed: {
-				...mapState('Article',['article','total','categories','articleDetails','editor']),
+				...mapState('Article',['article','total','categories','articleDetails','editors']),
 			},
 			methods: {
 				...mapActions('Article',['loadArticle','saveOrUpDateArticle','deleteArticleById','batchDelectArticle','loadCategories','findArticleById','checkArticle','findAllEditor']),
 				// 1.分页page处理
 				handleCurrentChange (page) {
 					this.page = page -1
+					const beginTime = this.time[0]
+					const endTime = this.time[1]
 					let payload = {
 						page:this.page,
 						pageSize: this.pageSize,
+						beginTime: beginTime,
+						endTime: endTime,
+						keywords: this.keywords,
 						categoryId: this.categoryId
 					}
 					this.loadArticle(payload)
-					console.log('页码'+page, this.page)
 				},
 				// 2.打开添加模态框
 				toAddHandler() {
@@ -291,6 +285,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 					let article = {
 						id:row.id,
 						title:row.title,
+						userId:row.author.id,
 						categoryId:row.category.id,
 						liststyle:row.liststyle,
 						publishtime:row.publishtime,
@@ -306,7 +301,6 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				},
 				// 4.提交表单
 				toSaveHandler() {
-					console.log('表单数据' + this.articleForm)
 					this.dialogVisible=false
 					this.saveOrUpDateArticle(this.articleForm)
 					.then((response) => {
@@ -391,7 +385,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				// 8.重置按钮，刷新数据
 				resetData() {
 					this.categoryId = null
-					this.keywords = {}
+					this.keywords = ''
 					this.time = []
 					let payload = {
 						page: 0,
@@ -436,57 +430,84 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 				},
 				// 11.文章评论区状态改变
 				changeCommentStatus(articleDetails) {
-					const plyload = {
+					const article = {
 						id:articleDetails.id,
-						status:this.commentStatus
+						title:articleDetails.title,
+						userId:articleDetails.author.id,
+						categoryId:articleDetails.category.id,
+						liststyle:this.commentStatus,
+						publishtime:articleDetails.publishtime,
+						readtimes:articleDetails.readtimes,
+						status:articleDetails.status,
+						thumbup:articleDetails.thumbup,
+						thumbdown:articleDetails.thumbdown,
+						content:articleDetails.content
 					}
+					this.saveOrUpDateArticle(article)
+					.then((response) => {
+						const status = response.data.status
+						if(status === 200){
+							this.findArticleById(articleDetails.id)
+							let payload = {
+								page:this.page,
+								pageSize: this.pageSize,
+							}
+							this.loadArticle(payload)
+							this.$notify.success({
+								title: '成功',
+								message: '更改成功！'
+							});
+						} else {
+							this.$notify.error({
+								title: '错误',
+								message: '更改失败！'
+							});
+						}
+					})
 				}
 			},
-			// 监听categoryId的变化，做数据重载
+			// 监听数据变化，做数据重载
 			watch: {
 				categoryId:function(now,old) {
 					const beginTime = this.time[0]
 					const endTime = this.time[1]
 					const payload = {
-						page: this.page,
-						pageSize: this.pageSize,
+						page: 0,
+						pageSize: 5,
 						beginTime: beginTime,
 						endTime: endTime,
-						keywords: this.keywords.words,
+						keywords: this.keywords,
 						categoryId: this.categoryId
 					}
+					console.log(payload)
 					this.loadArticle(payload)
 				},
 				time:function(now,old) {
 					const beginTime = this.time[0]
 					const endTime = this.time[1]
 					const payload = {
-						page: this.page,
-						pageSize: this.pageSize,
+						page: 0,
+						pageSize: 5,
 						beginTime: beginTime,
 						endTime: endTime,
-						keywords: this.keywords.words,
+						keywords: this.keywords,
 						categoryId: this.categoryId
 					}
 					this.loadArticle(payload)
 				},
-				keywords:{
-					function(now,old) {
-						console.log('old'+old)	
-						console.log('now'+now)
+				keywords:function(now,old) {
 						const beginTime = this.time[0]
 						const endTime = this.time[1]
 						const payload = {
-							page: this.page,
-							pageSize: this.pageSize,
+							page: 0,
+							pageSize: 5,
 							beginTime: beginTime,
 							endTime: endTime,
-							keywords: this.keywords.words,
+							keywords: this.keywords,
 							categoryId: this.categoryId
 						}
 						this.loadArticle(payload)
-					}
-				}
+					},
 			}
 	}
 </script>
@@ -518,7 +539,7 @@ import {mapActions,mapState,mapMutations,mapGetters} from 'vuex';
 		margin-left: 20px;
 	}
 	.reset {
-		margin-left: 20px;
+		margin-left: 50px;
 		margin-right: 10px;
 	}
 	.none {

@@ -6,7 +6,7 @@ export default {
     total: 10,
     categories: [],
     articleDetails: {},
-    editor: []
+    editors: []
   },
   mutations: {
     // 1.重置文章
@@ -19,15 +19,17 @@ export default {
     },
     // 3.重置栏目信息
     changeCategories (state, categories) {
-      state.categories = categories
+      const res = categories.filter(item => item.parent !== null)
+      state.categories = res
     },
     // 4.重置文章详情
     changeArticleDetails (state, articleDetails) {
       state.articleDetails = articleDetails
     },
     // 5.重置所有编辑信息
-    resetEditor (state, editor) {
-      state.editor = editor
+    resetEditor (state, data) {
+      const res = data.filter(item => item.role === 'editor')
+      state.editors = res
     }
   },
   actions: {

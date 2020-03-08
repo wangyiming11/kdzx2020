@@ -5,16 +5,17 @@
 				<el-tab-pane
 					:value="item.id"
 					:key="item.id"
-					v-for="(item, index) in categories"
+					v-for="item in categories"
 					:label="item.name"
-					:name="item.id"
+					:name="item.name"
 				>
 					<!-- 表格开始 -->
 					<div class="lanmu_content">
-						<el-table :data="children" style="width: 100%" size='small' :border='true'>
+						<el-table :data="children" style="width: 100%" size='small'>
 							<el-table-column
-								prop="id"
-								label="编号"
+								label="序号"
+								type="index" 
+								:index="1"
 								width="100"
 								align='center'>
 							</el-table-column>
@@ -28,7 +29,7 @@
 							</el-table-column>
 							<el-table-column width="150" label="操作" align='center'>
 								<template slot-scope='{row}'>
-									<i class="fa fa-trash" @click='deleteLanmu(row.id)'></i>&emsp;
+									<i class="fa fa-trash" style="cursor:hand" @click='deleteLanmu(row.id)'></i>&emsp;
 									<i class="fa fa-pencil" @click='updata(row)'></i>
 								</template>
 							</el-table-column>
@@ -61,7 +62,7 @@
 			<!-- 表单结束 -->
 		  <span slot="footer" class="dialog-footer">
 		    <el-button size='small' @click="dialogVisible = false">取 消</el-button>
-		    <el-button size='small' type="success" @click="save">确 定</el-button>
+		    <el-button size='small' type="primary" @click="save">确 定</el-button>
 		  </span>
 		</el-dialog>
 		<!-- 新增栏目模态框结束 -->
@@ -76,7 +77,8 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 				dialogVisible: false,
 				categoriesForm:{parentId:''},
 				title:'',
-				editableTabsValue: 1,
+				editableTabsValue: '头条',
+				id: '1'
 			}
 		},
 		 computed: {
@@ -84,10 +86,11 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 				...mapState('Lanmu',['children'])
   		},
 		created(){
-			this.loadCategories()
+			this.loadCategories(),
+			this.findCategoryByParentId(this.id)
 		},
   		methods:{
-				...mapActions('Lanmu',['loadCategories','saveCategories','deleteLm','deleteAllLm','findCategoryByParentId']),
+				...mapActions('Lanmu',['loadCategories','saveCategories','deleteLm','deleteAllLm','findCategoryByParentId','deleteCategoryByName']),
 				// 1.标签页增加删除方法
 				handleTabsEdit(targetName, action) {
 					if (action === 'add') {
@@ -101,7 +104,7 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 		          cancelButtonText: '取消',
 		          type: 'warning'
 		        }).then(() => {
-							this.deleteLm(targetName).then((response) => {
+							this.deleteCategoryByName(targetName).then((response) => {
 								const status = response.data.status
 								if (status === 200){
 									this.loadCategories()
@@ -124,41 +127,7 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 					localStorage.setItem('parentId',el.$attrs.value)
 					this.findCategoryByParentId(el.$attrs.value)
 				},
-  		// 	// 批量删除
-  		// 	deleteAll(){
-			// 	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-		  //         confirmButtonText: '确定',
-		  //         cancelButtonText: '取消',
-		  //         type: 'warning'
-		  //       })
-		  //       .then(()=>{
-		  //       	let ids=this.multipleSelection.map((item)=>{
-			// 		return item.id
-			// 	})
-			// 	this.deleteAllLm({ids})
-			// 	.then(()=>{
-			// 		this.$notify.success({
-			//           title: '成功',
-			//           message: '删除成功！'
-			//         });
-			//           this.loadCategories();
-			// 	})
-			// 	.catch(()=>{
-			// 		this.$notify.error({
-			//           title: '错误',
-			//           message: '删除失败！'
-			//         });
-			// 	})
-			// })
-		  //       .catch(()=>{
-		  //       	this.$message({
-		  //           type: 'info',
-		  //           message: '已取消删除'
-		  //         });   
-		  //       })	
-  		// 	 },
-
-  			 // 删除栏目
+  			 // 3.删除栏目
   			 deleteLanmu(id){
   			 	this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
 		          confirmButtonText: '确定',
@@ -183,7 +152,7 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
 		        })
 				
   			 },
-  			 // 修改栏目信息
+  			 // 4.修改栏目信息
   			 updata(data){
 					this.categoriesForm = data 
   			 	this.dialogVisible = true
@@ -195,14 +164,27 @@ import {mapActions,mapGetters,mapMutations,mapState} from 'vuex';
   			 	this.title = '新增栏目'
   			 	this.categoriesForm = {}
   			 },
-  			 // 保存栏目
+  			 // 5.保存栏目
 			 save(){
 				this.dialogVisible = false
-				this.saveCategories(this.categoriesForm).then(r=>{
-					let id = localStorage.getItem('parentId')
-					this.findCategoryByParentId(id)
+				this.saveCategories(this.categoriesForm).then((response) => {
+					const status = response.data.status
+					if(status === 200){
+						let id = localStorage.getItem('parentId')
+						this.findCategoryByParentId(id)
+						this.loadCategories()
+						this.$notify.success({
+							title: '成功',
+							message: '操作成功！'
+						});
+					} else {
+						this.$notify.error({
+							title: '错误',
+							message: '操作失败！'
+						});
+					}
+					
 				})
-				this.loadCategories()
 			 }
   		}
 	}
